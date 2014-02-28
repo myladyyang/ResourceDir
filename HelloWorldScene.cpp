@@ -33,10 +33,22 @@ bool HelloWorld::init()
     {
         return false;
     }
+  
 
+  
+  
+  
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Point origin = Director::getInstance()->getVisibleOrigin();
     
+    screen = visibleSize;
+    background = Sprite::create("background.png");
+
+    auto backgroundsize = background->getContentSize();
+    
+    background->setPosition(Point(origin.x + backgroundsize.width/2,origin.y + backgroundsize.height/2));
+
+    this->addChild(background,0);
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
@@ -60,13 +72,18 @@ bool HelloWorld::init()
 
     // add a label shows "Hello World"
     // create and initialize a label
-    inaction = false;
-    player = Sprite::create("Player.png");
-    auto size = player->getContentSize().width;
-    player->setPosition(Point( origin.x + size/2,  visibleSize.height/2+ origin.y));
-    
+    cocostudio::ArmatureDataManager::getInstance()->addArmatureFileInfo("player.ExportJson");
+    player = cocostudio::Armature::create("player");
 
-    this->addChild(player,0);
+    
+    player->setPosition(Point(origin.x + visibleSize.width/2,origin.y + visibleSize.height/4));
+    player->setScale(0.1);
+    this->addChild(player,1);
+
+
+    inaction = false;
+    locked = false;
+
     
 
     //touch
@@ -83,6 +100,7 @@ bool HelloWorld::init()
 }
 //50pix a step in one second
 void HelloWorld::MoveStep(Point* src,Point* dest){
+
   kmVec2 vec,outvec;
   vec.x = dest->x - src->x;
   vec.y = dest->y - src->y;
@@ -90,10 +108,10 @@ void HelloWorld::MoveStep(Point* src,Point* dest){
   double ratio = 50/len;
   kmVec2Scale(&outvec,&vec,ratio);
   if (abs(vec.y/vec.x * 100) < 30){
-    CCLOG("ratio of vec.y/vec.x = %d",abs(vec.y/vec.x * 100));
+    //    CCLOG("ratio of vec.y/vec.x = %d",abs(vec.y/vec.x * 100));
     onestep.x = outvec.x;
     onestep.y = 0;
-    
+    //    CCLOG("OUTSTEP : %f --- %f",onestep.x,onestep.y);
   }
   else{
     onestep.x = outvec.x;
@@ -115,35 +133,140 @@ bool HelloWorld::TouchesBegan(Touch* touch,Event* event){
   auto dstlocation = touch->getLocationInView();
   dstlocation = Director::getInstance()->convertToGL(dstlocation);
   auto srclocation = player->getPosition();
-  
+  auto bklocation = background->getPosition();
   MoveStep(&srclocation,&dstlocation);
-  this->schedule(schedule_selector(HelloWorld::LongTouch),0.2);
-  if(onestep.y ==0){
-    player->runAction(CCSequence::create(CallFunc::create(std::bind(&HelloWorld::ActionStart,this)),MoveTo::create(0.2,Point(srclocation.x + onestep.x,srclocation.y)),CallFunc::create(std::bind(&HelloWorld::ActionClean,this)),NULL));
+
+  // design for camera thing...
+  
+  auto limitleft = (bklocation.x - background->getContentSize().width/2 +50 >=0 );
+  auto limitright = (background->getContentSize().width/2 + bklocation.x <= screen.width + 50);
+  CCLOG("bklocation %f, bkwidth %f, screenwidth %f",bklocation.x,background->getContentSize().width/2,screen.width);
+  auto limit = true;
+  CCLOG("limitright %d,  limitleft %d, toward: %f, location : %d",limitright,limitleft,onestep.x,abs(srclocation.x-screen.width/2));
+  if((limitright && (onestep.x > 0)) || (limitleft && (onestep.x <0))){
+      CCLOG("player move");
+      CCLOG("toword: %f", onestep.x);
+      limit = true;
+    }
+  if(((limitright && (onestep.x <0)) || (limitleft && (onestep.x >0))) && (abs(srclocation.x - screen.width/2) <50)){
+    CCLOG("reach middle and direct change");
+    limit = false;
+  }
+  if(!limitright && !limitleft){
+    limit = false;
+  }
+  int jumpheight = -50;
+  Node* moveable;
+  if(limit ){
+    moveable = dynamic_cast<Node*>(player);
+    bklocation = srclocation;
+    jumpheight = 50;
+
+    CCLOG("breaking limit");
   }
   else{
-    player->runAction(CCSequence::create(CallFunc::create(std::bind(&HelloWorld::ActionStart,this)),JumpTo::create(0.5,Point(srclocation.x + onestep.x,srclocation.y),50,1),CallFunc::create(std::bind(&HelloWorld::ActionClean,this)),NULL));
+    moveable = dynamic_cast<Node*>(background);
+    onestep.x = -onestep.x;
+  }
+ 
+  
+  this->schedule(schedule_selector(HelloWorld::LongTouch),0.2);
+  if(limit && (srclocation.x +50 > screen.width && (onestep.x - srclocation.x) > 0)){
+
+    CCLOG("right end,stoping");
+    return true;
+  }
+  if(limit && ((srclocation.x -100) <0 && onestep.x < 0)){
+    CCLOG("left end,stoping, move x %f", srclocation.x);
+
+    return true;
+  }
+  
+  if(onestep.y ==0){
+    player->getAnimation()->play("Animation1");
+
+      moveable->runAction(CCSequence::create(CallFunc::create(std::bind(&HelloWorld::ActionStart,this)),MoveTo::create(0.2,Point(bklocation.x + onestep.x,bklocation.y)),CallFunc::create(std::bind(&HelloWorld::ActionClean,this)),NULL));
+
+
+  }
+  else{
+    player->getAnimation()->play("Animation1");
+    moveable->runAction(CCSequence::create(CallFunc::create(std::bind(&HelloWorld::ActionStart,this)),JumpTo::create(0.5,Point(bklocation.x + onestep.x,bklocation.y),jumpheight,1),CallFunc::create(std::bind(&HelloWorld::ActionClean,this)),NULL));
+
   }
   
   return true;
 }
 void HelloWorld::LongTouch(float dt){
 
-  auto location = player->getPosition();
+  auto srclocation = player->getPosition();
+  auto bklocation = background->getPosition();
+  // design for camera thing...
+  auto limitleft = (bklocation.x - background->getContentSize().width/2 +50 >=0 );
+  auto limitright = (bklocation.x + background->getContentSize().width/2 <= screen.width + 50);
+
+  CCLOG("bklocation %f, bkwidth %f, screenwidth %f",bklocation.x,background->getContentSize().width/2,screen.width);
+  auto limit = true;
+  CCLOG("limitright %d,  limitleft %d, toward: %f, location : %d",limitright,limitleft,onestep.x,abs(srclocation.x-screen.width/2));
+  if((limitright && (onestep.x > 0)) || (limitleft && (onestep.x <0))){
+      CCLOG("player move");
+      CCLOG("toword: %f", onestep.x);
+      limit = true;
+    }
+  if(((limitright && (onestep.x <0)) || (limitleft && (onestep.x >0))) && (abs(srclocation.x - screen.width/2) <50)){
+    CCLOG("reach middle and direct change");
+    limit = false;
+  }
+  if(!limitright && !limitleft){
+    limit = false;
+  }
+  int jumpheight = -50;
+  Node* moveable;
+  double movex = onestep.x;
+  if(limit ){
+    moveable = dynamic_cast<Node*>(player);
+    bklocation = srclocation;
+    jumpheight = 50;
+
+    CCLOG("breaking limit");
+  }
+  else{
+    moveable = dynamic_cast<Node*>(background);
+    movex = -onestep.x;
+  }
+ 
+  
+  if(limit && (srclocation.x +50 > screen.width && (onestep.x > 0))){
+
+    CCLOG("right end,stoping");
+    return ;
+  }
+  if(limit && ((srclocation.x -100) <0 && onestep.x < 0)){
+    CCLOG("left end,stoping, move x %f", srclocation.x);
+
+    return;
+  }
+
+  
   if (onestep.y ==0){
-    player->runAction(CCSequence::create(CallFunc::create(std::bind(&HelloWorld::ActionStart,this)),MoveTo::create(0.2,Point(location.x + onestep.x,location.y)),CallFunc::create(std::bind(&HelloWorld::ActionClean,this)),NULL));
+    player->getAnimation()->play("Animation1");
+    moveable->runAction(MoveTo::create(0.2,Point(bklocation.x + movex,bklocation.y)));
+
   }
   else{
       if (inaction == true){
 	return;
       }
-    player->runAction(CCSequence::create(CallFunc::create(std::bind(&HelloWorld::ActionStart,this)),JumpTo::create(0.5,Point(location.x + onestep.x,location.y),50,1),CallFunc::create(std::bind(&HelloWorld::ActionClean,this)),NULL));
+      player->getAnimation()->play("Animation1");
+      moveable->runAction(CCSequence::create(CallFunc::create(std::bind(&HelloWorld::ActionStart,this)),JumpTo::create(0.5,Point(bklocation.x + movex,bklocation.y),jumpheight,1),CallFunc::create(std::bind(&HelloWorld::ActionClean,this)),NULL));
+
   }
   
 
 }
 void HelloWorld::TouchesEnded(Touch* touch,Event* event){
   this->unschedule(schedule_selector(HelloWorld::LongTouch));
+
 }
 
 
