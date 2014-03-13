@@ -1,8 +1,8 @@
 #include "TestScene.h"
-
+#include "Valkyrie.h"
 USING_NS_CC;
 TestScene::TestScene():UserScene(){
-
+  
   CCLOG("TestScene construct");
 }
 
@@ -10,16 +10,14 @@ TestScene::TestScene():UserScene(){
 bool TestScene::init(){
   CCLOG("in Test Scene");
   UserScene::init();
-  // auto touchlistener = EventListenerTouchOneByOne::create();
 
-  // touchlistener->onTouchBegan = std::bind(&TestScene::TouchesBegan,this,std::placeholders::_1,std::placeholders::_2);
-  // touchlistener->setSwallowTouches(true);
-  // auto dispatcher = Director::getInstance()->getEventDispatcher();
-     
-  // dispatcher->addEventListenerWithSceneGraphPriority(touchlistener,this);
+  
+  initCache("player.ExportJson");
+  auto player = Valkyrie::create("player");
+  
+  addPlayer(player);
 
-  //prepare layer and sprites here
-
+  
   return true;
 }
 

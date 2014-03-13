@@ -1,4 +1,5 @@
 #include "WorldLayer.h"
+#include "common.h"
 USING_NS_CC;
 bool WorldLayer::init(){
   Layer::init();
@@ -7,6 +8,17 @@ bool WorldLayer::init(){
   listener->onTouchBegan = std::bind(&WorldLayer::TouchesBegan,this,std::placeholders::_1,std::placeholders::_2);
   listener->onTouchEnded = std::bind(&WorldLayer::TouchesEnded,this,std::placeholders::_1,std::placeholders::_2);
   Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
+
+  //ground
+  ground = Node::create();
+  ground->setPosition(Point(GAME_WIDTH,GAME_HEIGHT*GROUND_RATIO));
+
+  auto groundbody = PhysicsBody::createEdgeBox(Size(GAME_WIDTH*2,1));
+  groundbody->setDynamic(false);
+  ground->setPhysicsBody(groundbody);
+  addChild(ground);
+
+  
   return true;
 }
 
@@ -51,6 +63,10 @@ bool WorldLayer::ContactBegan(cocos2d::EventCustom* event, const cocos2d::Physic
   return true;
 }
 
+Size WorldLayer::getWorldSize(){//world size now equal to backgournd size
+  return Size(GAME_WIDTH*2,GAME_HEIGHT*2);
+}
+
 void WorldLayer::update(float dt){
 
 }
@@ -59,6 +75,8 @@ WorldLayer::WorldLayer():Layer(),userscene(NULL),background(NULL),m_cTouchNode(N
   CCLOG("WorldLayer ctor called");
 }
 
-
+float WorldLayer::getGroundHeight(){
+  return ground->getPosition().y;
+}
   
 

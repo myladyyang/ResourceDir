@@ -5,8 +5,7 @@
 
 class TestScene: public UserScene{
  public:
-  bool init();
-  
+  virtual bool init() override;
   CREATE_FUNC(TestScene);
  private:
   TestScene();

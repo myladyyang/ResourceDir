@@ -1,14 +1,16 @@
 #include "UserScene.h"
 #include "GamePlay.h"
 #include "WorldLayer.h"
+#include "Valkyrie.h"
 USING_NS_CC;
+
 void UserScene::end(){
   GamePlay::getInstance()->NextScene();
 }
 
 UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL){
+  
 
-  CCLOG("UserScene construct");
 }
 
 UserScene::~UserScene(){
@@ -16,7 +18,16 @@ UserScene::~UserScene(){
 }
 
 bool UserScene::init(){
+
   Scene::init();
+  Scene::initWithPhysics();
+  
+  getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+    
+  getPhysicsWorld()->setGravity(Vect(0,-100));
+  getPhysicsWorld()->setSpeed(3.0);
+
+
   CCLOG("UserScene init entered");
   syslayer = SysLayer::create();
   worldlayer = WorldLayer::create();
@@ -24,20 +35,19 @@ bool UserScene::init(){
   this->addChild(syslayer);
   this->addChild(worldlayer);
 
+  WorldSize = worldlayer->getWorldSize();
   return true;
 }
 
 
-Scene * UserScene::createWithPhysics(){
+Scene * UserScene::create(){
+  CCLOG("UserScene create");
   Scene *ret = new UserScene();
-  if(ret && ret->initWithPhysics()){
+  if(ret && ret->init()){
     ret->autorelease();
     //we set the physical world property here
-    ret->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    
-    ret->getPhysicsWorld()->setGravity(Vect(0,-100));
-    ret->getPhysicsWorld()->setSpeed(3.0);
-    ret->init();
+
+
     return ret;
   }
   else{
@@ -64,7 +74,7 @@ void UserScene::update(float delta){
       _physicsWorld->update(delta);
     }
 
-  if (player != NULL){
+  if (player->getActionState() != ActionState::STANDBY){
 
     Point ppnew = player->getPhysicsBody()->getPosition();
     Director::getInstance()->setModelView(-(ppnew.x -pp.x),-(ppnew.y-pp.y),0);
@@ -73,12 +83,20 @@ void UserScene::update(float delta){
   //update camera..
 }
 #endif
-//player move code should be added here or some more complicate code
-//void UserScene::onNodeTouchedBegan(Node* node,Point tp){
-  //play animation on node...
-  //@code
-  //node->touched() or something else...
-  
-  
 
-//}
+void UserScene::addPlayer(Valkyrie * p){
+  player = p;
+  worldlayer->addChild(player);
+  auto p_size = player->getContentSize();
+  player->setPosition(Point(p_size.width/2*SCALE ,worldlayer->getGroundHeight()+p_size.height/2*SCALE));
+}
+
+void UserScene::setPlayerPostion(Point pos){
+  player->setPosition(pos);
+  pp = pos;
+}
+
+bool UserScene::initCache(const std::string json){
+  cocostudio::ArmatureDataManager::getInstance()->addArmatureFileInfo(json);
+  return true;
+}

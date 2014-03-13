@@ -61,8 +61,8 @@ bool GamePlay::init(){
   //now we only need add scene, gameplay init with sample scene
   
 
-  addScene(TestScene::createWithPhysics());
-  addScene(TestScene::createWithPhysics());
+  addScene(TestScene::create());
+  addScene(TestScene::create());
   return true;
   
 }

@@ -15,6 +15,11 @@ class WorldLayer:public cocos2d::Layer{
   virtual bool ContactBegan(cocos2d::EventCustom* event, const cocos2d::PhysicsContact& contact);
   virtual void update(float dt) override;
   void setUserScene(UserScene* scene){userscene=scene;}
+  
+  cocos2d::Size getWorldSize();
+  float getGroundHeight();
+  
+  
   CREATE_FUNC(WorldLayer);
  private:
   WorldLayer();
@@ -22,6 +27,8 @@ class WorldLayer:public cocos2d::Layer{
   cocos2d::Sprite * background;
 
   cocos2d::Node* m_cTouchNode;
+
+  cocos2d::Node* ground;
 };
 
 
