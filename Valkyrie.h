@@ -31,13 +31,19 @@ class Valkyrie: public cocostudio::Armature{
   static  Valkyrie* create(const std::string& name);
 
   ActionState getActionState(){return action_state;}
-  
+  void setActionState(ActionState state){action_state = state;}
+  bool IsMoving();
+  bool getToward();
+
  protected:
   Valkyrie();
-
+  
+  float getXposition(){return getPosition().x;};
   
   BattleState battle_state;
   ActionState action_state;
+  bool toward;
+  friend class UserScene;
   
 };
 

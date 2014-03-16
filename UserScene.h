@@ -18,7 +18,7 @@ class UserScene :public cocos2d::Scene{
   virtual WorldLayer* getWorldLayer() ;
   virtual void AddNodetoWorld(Node*,int);
   void addPlayer(Valkyrie * p);
-  void setPlayerPostion(cocos2d::Point pos);
+
 
   virtual bool initCache(const std::string jsonfile);
 
@@ -26,8 +26,10 @@ class UserScene :public cocos2d::Scene{
  protected:
   void onNodeTouchedBegan(cocos2d::Node*){}
   void onNodeTouchedEnd(cocos2d::Node*){}
-  void onWorldTouchedBegan(cocos2d::Point){CCLOG("world in scene touched");}
-  void onWorldTouchedEnd(cocos2d::Point){CCLOG("world in scene ended");}
+  void onWorldTouchedBegan(cocos2d::Point);
+  void onWorldTouchedEnd();
+  
+  
   
 #if CC_USE_PHYSICS
   void update(float dt) override;
@@ -36,6 +38,7 @@ class UserScene :public cocos2d::Scene{
   ~UserScene();
   friend class WorldLayer;
  private:
+  void scheduleMove(float dt);
   Valkyrie * player;
   WorldLayer * worldlayer;
   SysLayer * syslayer;

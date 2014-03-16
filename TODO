@@ -1,2 +1,2 @@
-1. batchnode for worldlayer
-2. createwithphysics
+1.speed is zero, the position is not valid.
+2. change the action state mechanism

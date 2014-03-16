@@ -6,7 +6,11 @@ const PhysicsMaterial common_material(0.0f,0.1f,0.3f);
 
 
 Valkyrie::Valkyrie():Armature(){
-  
+  toward = true;
+}
+
+bool Valkyrie::getToward(){
+  return toward;;
 }
 
 bool Valkyrie::init(const std::string& name){
@@ -40,9 +44,10 @@ Valkyrie *Valkyrie::create(const std::string& name)
     return nullptr;
 }
 
-void Valkyrie::Move(bool toward){
+void Valkyrie::Move(bool to){
   action_state=ActionState::MOVE;
-  if (toward > 0){
+  toward =to;
+  if (to){
     this->getPhysicsBody()->setVelocity(Vect(VALKYRIE_SPEED,0));
   }
   else{
@@ -51,12 +56,20 @@ void Valkyrie::Move(bool toward){
     
 }
 
-void Valkyrie::Jump(bool toward){
-  if (action_state != ActionState::STANDBY){//jump start form standby
+void Valkyrie::Jump(bool to){
+  bool doaction = false;
+  if (action_state == ActionState::STANDBY){
+    action_state=ActionState::JUMP;
+    doaction = true;
+  }
+  if (action_state == ActionState::JUMP2){
+    doaction = true;
+  }
+  if (!doaction){
     return;
   }
-  action_state=ActionState::JUMP;
-  if( toward >0){
+  toward = to;
+  if(to){
     this->getPhysicsBody()->setVelocity(Vect(VALKYRIE_SPEED,VALKYRIE_JUMPHIGH));
   }
   else{
@@ -67,7 +80,7 @@ void Valkyrie::Jump(bool toward){
 
 void Valkyrie::Jump2(bool toward){
   if (action_state == ActionState::JUMP){
-    
+    action_state = ActionState::JUMP2;
     Jump(toward);
   }
 }
@@ -75,4 +88,7 @@ void Valkyrie::Jump2(bool toward){
 void Valkyrie::Stop(){
   this->getPhysicsBody()->setVelocity(Vect(0,0));
   action_state=ActionState::STANDBY;
+}
+bool Valkyrie::IsMoving(){
+  return (getPhysicsBody()->getVelocity() == Point(0,0));
 }

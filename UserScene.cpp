@@ -2,6 +2,7 @@
 #include "GamePlay.h"
 #include "WorldLayer.h"
 #include "Valkyrie.h"
+#include <stdlib.h>
 USING_NS_CC;
 
 void UserScene::end(){
@@ -9,7 +10,7 @@ void UserScene::end(){
 }
 
 UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL){
-  
+  ScreenSize = Size(GAME_WIDTH,GAME_HEIGHT);
 
 }
 
@@ -68,35 +69,96 @@ void UserScene::AddNodetoWorld(Node* snode,int zorder){
 }
 #if CC_USE_PHYSICS
 void UserScene::update(float delta){
+  static int delayframe =0;
   Node::update(delta);
   if (nullptr != _physicsWorld)
     {
       _physicsWorld->update(delta);
     }
-
-  if (player->getActionState() != ActionState::STANDBY){
-
-    Point ppnew = player->getPhysicsBody()->getPosition();
-    Director::getInstance()->setModelView(-(ppnew.x -pp.x),-(ppnew.y-pp.y),0);
-    pp = ppnew;
+  Point ppnew = player->getPosition();
+  auto pp2 = ppnew;
+  //perforance enhanced here
+  if (WorldSize.width - player->getXposition() <= ScreenSize.width/2){
+    ppnew.x = pp.x;
+    
   }
+  if (player->getXposition() < ScreenSize.width/2 +player->getContentSize().width/20){
+    ppnew.x = pp.x;
+  }
+   if (player->getActionState() != ActionState::STANDBY){
+     Director::getInstance()->setModelView(-(ppnew.x -pp.x),-(ppnew.y-pp.y),0);
+
+   }
+   if (player->IsMoving() && (player->getActionState() != ActionState::STANDBY)){
+     //block 10 frame
+     if (delayframe < 10){
+       delayframe++;
+       
+     }
+     else{
+       CCLOG("stop at y  %f",ppnew.y);
+       player->setActionState(ActionState::STANDBY);
+       delayframe = 0;
+     }
+
+   }
+   pp = pp2;
   //update camera..
 }
 #endif
 
 void UserScene::addPlayer(Valkyrie * p){
   player = p;
-  worldlayer->addChild(player);
+  worldlayer->addChild(player,10);
   auto p_size = player->getContentSize();
-  player->setPosition(Point(p_size.width/2*SCALE ,worldlayer->getGroundHeight()+p_size.height/2*SCALE));
+  player->setPosition(Point(p_size.width/2*SCALE + GAME_WIDTH/2 ,worldlayer->getGroundHeight()+p_size.height/2*SCALE));
+  pp = player->getPosition();
 }
 
-void UserScene::setPlayerPostion(Point pos){
-  player->setPosition(pos);
-  pp = pos;
+void UserScene::scheduleMove(float dt){
+  auto toward = player->getToward();
+  player->Move(toward);
 }
 
 bool UserScene::initCache(const std::string json){
   cocostudio::ArmatureDataManager::getInstance()->addArmatureFileInfo(json);
   return true;
+}
+
+
+void UserScene::onWorldTouchedBegan(Point tp){
+  //  CCLOG("on world touch began,player at %f, %f",player->getPosition().x, player->getPosition().y);
+  //  CCLOG("on world touch began,player at %f, %f",player->getPhysicsBody()->getPosition().x, player->getPhysicsBody()->getPosition().y);
+  Point delta;
+  delta.x = tp.x - pp.x;
+  delta.y = tp.y - pp.y;
+  bool b_jump = false;
+
+  if (delta.y >0){
+    b_jump = delta.y/(abs(delta.x)*100)<30?true:false;
+  }
+
+  switch (player->getActionState()){
+  case ActionState::STANDBY:
+    if (!b_jump){
+      //      CCLOG("player move");
+      player->Move(delta.x>0?true:false);
+      schedule(schedule_selector(UserScene::scheduleMove),0.2);
+      break;
+    }
+    else{
+      player->Jump(delta.x>0?true:false);
+      break;
+    }
+  case ActionState::JUMP:
+    CCLOG("jump2");
+    player->Jump2(delta.x>0?true:false);
+    break;
+  default:
+    break;
+  }
+}
+
+void UserScene::onWorldTouchedEnd(){
+  unschedule(schedule_selector(UserScene::scheduleMove));
 }

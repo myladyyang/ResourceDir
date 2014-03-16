@@ -9,16 +9,32 @@ bool WorldLayer::init(){
   listener->onTouchEnded = std::bind(&WorldLayer::TouchesEnded,this,std::placeholders::_1,std::placeholders::_2);
   Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
 
+  //background,can be enhance by textcache.
+  
+  background = Sprite::create("background.png");
+  
+  auto background_size = background->getContentSize();
+  background->setAnchorPoint(Point(0,0));
+  background->setPosition(0,0);
+  addChild(background);
   //ground
   ground = Node::create();
   ground->setPosition(Point(GAME_WIDTH,GAME_HEIGHT*GROUND_RATIO));
 
-  auto groundbody = PhysicsBody::createEdgeBox(Size(GAME_WIDTH*2,1));
+  auto groundbody = PhysicsBody::createBox(Size(GAME_WIDTH*2,1),PhysicsMaterial(100,1.0,1.0));
+
   groundbody->setDynamic(false);
   ground->setPhysicsBody(groundbody);
   addChild(ground);
 
-  
+  //world room
+  auto room = Node::create();
+  auto roombody = PhysicsBody::createEdgeBox(background_size);
+  room->setPhysicsBody(roombody);
+
+  room->setPosition(background_size.width/2,background_size.height/2);
+
+  addChild(room);
   return true;
 }
 
@@ -48,14 +64,12 @@ bool WorldLayer::TouchesBegan(cocos2d::Touch* touch,cocos2d::Event* event){
 }
 
 void WorldLayer::TouchesEnded(cocos2d::Touch* touch, cocos2d::Event* event){
-  auto tp =  touch->getLocationInView();
-  tp = Director::getInstance()->convertToGL(tp);
   if (m_cTouchNode != NULL){
     userscene->onNodeTouchedEnd(m_cTouchNode);
     m_cTouchNode=NULL;
   }
   else{
-    userscene->onWorldTouchedEnd(tp);
+    userscene->onWorldTouchedEnd();
   }
 }
 
@@ -64,7 +78,8 @@ bool WorldLayer::ContactBegan(cocos2d::EventCustom* event, const cocos2d::Physic
 }
 
 Size WorldLayer::getWorldSize(){//world size now equal to backgournd size
-  return Size(GAME_WIDTH*2,GAME_HEIGHT*2);
+  CCLOG("background size %f ",background->getContentSize().width);
+  return background->getContentSize();
 }
 
 void WorldLayer::update(float dt){

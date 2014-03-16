@@ -1,8 +1,11 @@
 #ifndef _COMMON_H__
 #define _COMMON_H__
 
-#define GAME_WIDTH 800
-#define GAME_HEIGHT 600
+#define GAME_WIDTH 700
+#define GAME_HEIGHT 400
+#define MOVE_RANGE GAME_WIDTH/5
+#define BACKGROUND_WIDTH GAME_WIDTH*2
+#define BACKGROUND_HEIGHT GAME_HEIGHT*2
 #define GROUND_RATIO 0.25
 
 #endif
