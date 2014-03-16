@@ -1,2 +1,1 @@
-1.speed is zero, the position is not valid.
-2. change the action state mechanism
+1. enhance the UserScene struct...

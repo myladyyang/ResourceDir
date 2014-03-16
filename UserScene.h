@@ -28,7 +28,7 @@ class UserScene :public cocos2d::Scene{
   void onNodeTouchedEnd(cocos2d::Node*){}
   void onWorldTouchedBegan(cocos2d::Point);
   void onWorldTouchedEnd();
-  
+
   
   
 #if CC_USE_PHYSICS

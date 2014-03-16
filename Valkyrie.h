@@ -34,7 +34,10 @@ class Valkyrie: public cocostudio::Armature{
   void setActionState(ActionState state){action_state = state;}
   bool IsMoving();
   bool getToward();
-
+  
+  void SetMoveAnimation(std::string movestr){animation_move = movestr;}
+  void SetJumpAnimation(std::string jumpstr){animation_jump = jumpstr;}
+  void SetJump2Animation(std::string jump2str){animation_jump2 = jump2str;}
  protected:
   Valkyrie();
   
@@ -45,6 +48,11 @@ class Valkyrie: public cocostudio::Armature{
   bool toward;
   friend class UserScene;
   
+
+ private:
+  std::string animation_move;
+  std::string animation_jump;
+  std::string animation_jump2;
 };
 
 

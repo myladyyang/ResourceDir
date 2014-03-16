@@ -47,6 +47,7 @@ Valkyrie *Valkyrie::create(const std::string& name)
 void Valkyrie::Move(bool to){
   action_state=ActionState::MOVE;
   toward =to;
+  getAnimation()->play("Animation1");
   if (to){
     this->getPhysicsBody()->setVelocity(Vect(VALKYRIE_SPEED,0));
   }
@@ -59,19 +60,28 @@ void Valkyrie::Move(bool to){
 void Valkyrie::Jump(bool to){
 
   bool doaction = false;
-  if (action_state == ActionState::STANDBY){
+  switch(action_state){
+  case ActionState::STANDBY:
+    getAnimation()->play(animation_jump);
     action_state=ActionState::JUMP;
     doaction = true;
-  }
-  if (action_state == ActionState::JUMP2){
+    break;
+  case ActionState::JUMP2:
+    getAnimation()->play(animation_jump2);
     doaction = true;
-  }
-  if (action_state == ActionState::MOVE){
+    break;
+  case ActionState::MOVE:
+    getAnimation()->play(animation_move);
     doaction = true;
+    break;
+  default:
+    break;
   }
+
   if (!doaction){
     return;
   }
+
   toward = to;
   if(to){
     this->getPhysicsBody()->setVelocity(Vect(VALKYRIE_SPEED,VALKYRIE_JUMPHIGH));

@@ -133,16 +133,19 @@ void UserScene::onWorldTouchedBegan(Point tp){
   case ActionState::STANDBY:
     if (!b_jump){
       //      CCLOG("player move");
+
       player->Move(delta.x>0?true:false);
       schedule(schedule_selector(UserScene::scheduleMove),0.2);
       break;
     }
     else{
+
       player->Jump(delta.x>0?true:false);
       break;
     }
   case ActionState::JUMP:
     CCLOG("jump2");
+
     player->Jump2(delta.x>0?true:false);
     break;
   case ActionState::MOVE:

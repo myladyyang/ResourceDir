@@ -14,6 +14,9 @@ bool TestScene::init(){
   
   initCache("player.ExportJson");
   auto player = Valkyrie::create("player");
+  player->SetMoveAnimation("Animation1");
+  player->SetJumpAnimation("Animation1");
+  player->SetJump2Animation("Animation1");
   addPlayer(player);
 
   auto car = Node::create();
