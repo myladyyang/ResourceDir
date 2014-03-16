@@ -57,12 +57,16 @@ void Valkyrie::Move(bool to){
 }
 
 void Valkyrie::Jump(bool to){
+
   bool doaction = false;
   if (action_state == ActionState::STANDBY){
     action_state=ActionState::JUMP;
     doaction = true;
   }
   if (action_state == ActionState::JUMP2){
+    doaction = true;
+  }
+  if (action_state == ActionState::MOVE){
     doaction = true;
   }
   if (!doaction){
@@ -90,5 +94,5 @@ void Valkyrie::Stop(){
   action_state=ActionState::STANDBY;
 }
 bool Valkyrie::IsMoving(){
-  return (getPhysicsBody()->getVelocity() == Point(0,0));
+  return (getPhysicsBody()->getVelocity() != Point(0,0));
 }

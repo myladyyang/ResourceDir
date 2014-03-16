@@ -21,7 +21,7 @@ bool WorldLayer::init(){
   ground = Node::create();
   ground->setPosition(Point(GAME_WIDTH,GAME_HEIGHT*GROUND_RATIO));
 
-  auto groundbody = PhysicsBody::createBox(Size(GAME_WIDTH*2,1),PhysicsMaterial(100,1.0,1.0));
+  auto groundbody = PhysicsBody::createBox(Size(GAME_WIDTH*2,1),PhysicsMaterial(100,0.0,1.0));
 
   groundbody->setDynamic(false);
   ground->setPhysicsBody(groundbody);

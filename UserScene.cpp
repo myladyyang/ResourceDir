@@ -69,7 +69,7 @@ void UserScene::AddNodetoWorld(Node* snode,int zorder){
 }
 #if CC_USE_PHYSICS
 void UserScene::update(float delta){
-  static int delayframe =0;
+
   Node::update(delta);
   if (nullptr != _physicsWorld)
     {
@@ -87,19 +87,6 @@ void UserScene::update(float delta){
   }
    if (player->getActionState() != ActionState::STANDBY){
      Director::getInstance()->setModelView(-(ppnew.x -pp.x),-(ppnew.y-pp.y),0);
-
-   }
-   if (player->IsMoving() && (player->getActionState() != ActionState::STANDBY)){
-     //block 10 frame
-     if (delayframe < 10){
-       delayframe++;
-       
-     }
-     else{
-       CCLOG("stop at y  %f",ppnew.y);
-       player->setActionState(ActionState::STANDBY);
-       delayframe = 0;
-     }
 
    }
    pp = pp2;
@@ -129,13 +116,17 @@ bool UserScene::initCache(const std::string json){
 void UserScene::onWorldTouchedBegan(Point tp){
   //  CCLOG("on world touch began,player at %f, %f",player->getPosition().x, player->getPosition().y);
   //  CCLOG("on world touch began,player at %f, %f",player->getPhysicsBody()->getPosition().x, player->getPhysicsBody()->getPosition().y);
+  if(!player->IsMoving()){
+    player->setActionState(ActionState::STANDBY);
+  }
+
   Point delta;
   delta.x = tp.x - pp.x;
   delta.y = tp.y - pp.y;
   bool b_jump = false;
 
   if (delta.y >0){
-    b_jump = delta.y/(abs(delta.x)*100)<30?true:false;
+    b_jump = delta.y/(abs(delta.x)*100)<40?true:false;
   }
 
   switch (player->getActionState()){
@@ -154,6 +145,19 @@ void UserScene::onWorldTouchedBegan(Point tp){
     CCLOG("jump2");
     player->Jump2(delta.x>0?true:false);
     break;
+  case ActionState::MOVE:
+
+    if (!b_jump){
+	
+      player->Move(delta.x>0?true:false);
+      schedule(schedule_selector(UserScene::scheduleMove),0.2);
+      break;
+    }
+    else{
+      CCLOG("move,jump");
+      player->Jump(delta.x>0?true:false);
+      break;
+    }
   default:
     break;
   }
