@@ -5,6 +5,7 @@
 #include "SysLayer.h"
 #include "WorldLayer.h"
 #include "Valkyrie.h"
+#include "BattleLayer.h"
 #include "common.h"
 class WorldLayer;
 
@@ -24,8 +25,8 @@ class UserScene :public cocos2d::Scene{
 
   static Scene* create();
  protected:
-  void onNodeTouchedBegan(cocos2d::Node*){}
-  void onNodeTouchedEnd(cocos2d::Node*){}
+  void onNodeTouchedBegan(cocos2d::Node*,cocos2d::Point);
+  void onNodeTouchedEnd(cocos2d::Node*);
   void onWorldTouchedBegan(cocos2d::Point);
   void onWorldTouchedEnd();
 
@@ -42,6 +43,8 @@ class UserScene :public cocos2d::Scene{
   Valkyrie * player;
   WorldLayer * worldlayer;
   SysLayer * syslayer;
+  BattleLayer * battlelayer;
+
   cocos2d::Point pp;//player position
   cocos2d::Size WorldSize;
   cocos2d::Size ScreenSize;

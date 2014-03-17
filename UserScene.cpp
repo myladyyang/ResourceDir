@@ -9,7 +9,7 @@ void UserScene::end(){
   GamePlay::getInstance()->NextScene();
 }
 
-UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL){
+UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL),battlelayer(NULL){
   ScreenSize = Size(GAME_WIDTH,GAME_HEIGHT);
 
 }
@@ -33,9 +33,13 @@ bool UserScene::init(){
   syslayer = SysLayer::create();
   worldlayer = WorldLayer::create();
   worldlayer->setUserScene(this);
+
   this->addChild(syslayer);
   this->addChild(worldlayer);
 
+  battlelayer = BattleLayer::create();
+  this->addChild(battlelayer);
+  battlelayer->setVisible(false);
   WorldSize = worldlayer->getWorldSize();
   return true;
 }
@@ -112,6 +116,15 @@ bool UserScene::initCache(const std::string json){
   return true;
 }
 
+void UserScene::onNodeTouchedBegan(Node* node,Point tp){
+  battlelayer->setPosition(tp);
+  battlelayer->FadeOut();
+
+}
+
+void UserScene::onNodeTouchedEnd(Node*){
+
+}
 
 void UserScene::onWorldTouchedBegan(Point tp){
   //  CCLOG("on world touch began,player at %f, %f",player->getPosition().x, player->getPosition().y);

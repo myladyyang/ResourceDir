@@ -25,6 +25,8 @@ bool Valkyrie::init(const std::string& name){
   auto body = PhysicsBody::createBox(Size(getContentSize().width * SCALE,getContentSize().height * SCALE),common_material);
   body->setRotationEnable(false);
   body->setDynamic(true);
+  
+  
   setPhysicsBody(body);
   
   setScale(SCALE);

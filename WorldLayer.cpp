@@ -48,13 +48,14 @@ bool WorldLayer::TouchesBegan(cocos2d::Touch* touch,cocos2d::Event* event){
   Node* ret = NULL;
   for (const auto &child:_children){
     if(child->getBoundingBox().containsPoint(tp)){
+
       if (child->getZOrder() > max_zorder) ret = child;
     }
   }
   if(userscene != NULL){
     if(ret != NULL){//node touch
       m_cTouchNode = ret;
-      userscene->onNodeTouchedBegan(ret);
+      userscene->onNodeTouchedBegan(ret,tp);
     }
     else{//world touch
       userscene->onWorldTouchedBegan(tp);
