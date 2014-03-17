@@ -39,7 +39,7 @@ bool UserScene::init(){
 
   battlelayer = BattleLayer::create();
   this->addChild(battlelayer);
-  battlelayer->setVisible(false);
+
   WorldSize = worldlayer->getWorldSize();
   return true;
 }
@@ -117,8 +117,12 @@ bool UserScene::initCache(const std::string json){
 }
 
 void UserScene::onNodeTouchedBegan(Node* node,Point tp){
+  CCLOG("click node position:   %f - %f",node->getPosition().x,node->getPosition().y);
+  auto body = node->getPhysicsBody();
+  CCLOG("phy body at %f - %f",body->getPosition().x,body->getPosition().y);
   battlelayer->setPosition(tp);
-  battlelayer->FadeOut();
+  battlelayer->FadeIn();
+  //  battlelayer->setVisible(true);
 
 }
 

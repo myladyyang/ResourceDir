@@ -8,7 +8,7 @@ bool BattleLayer::init(){
   }
   CCLOG("Battle init start");
   setAnchorPoint(Point(0,0));
-  setPosition(Point(0,0));
+  setPosition(Point(-100,-100));
   this->setContentSize(Size(84,28));
   b_act1 = Sprite::create("button1.jpg");
   b_act2 = Sprite::create("button1.jpg");
@@ -26,10 +26,10 @@ bool BattleLayer::init(){
   b_act3->setScale(0.3);
   b_act4->setScale(0.3);
 
-  // b_act1->setVisible(false);
-  // b_act2->setVisible(false);
-  // b_act3->setVisible(false);
-  // b_act4->setVisible(false);
+  b_act1->setVisible(false);
+  b_act2->setVisible(false);
+  b_act3->setVisible(false);
+  b_act4->setVisible(false);
   
   this->addChild(b_act1,1);
   this->addChild(b_act2,1);
@@ -43,5 +43,9 @@ bool BattleLayer::init(){
 
 
 void BattleLayer::FadeOut(){
-  this->runAction(FadeOut::create(2.0f));
+  this->runAction(FadeOut::create(1.0f));
+}
+
+void BattleLayer::FadeIn(){
+  this->runAction(FadeIn::create(1.0f));
 }

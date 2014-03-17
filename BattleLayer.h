@@ -8,6 +8,7 @@ class BattleLayer: public cocos2d::LayerColor{
  public:
   virtual bool init();
   virtual void FadeOut();
+  virtual void FadeIn();
   CREATE_FUNC(BattleLayer);
 
  private:

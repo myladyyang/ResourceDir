@@ -24,8 +24,12 @@ bool TestScene::init(){
 
   addPlayer(player);
 
-  auto car = Node::create();
-  car->setContentSize(Size(100,100));
+  auto car = Sprite::create("button1.jpg");
+  //  car->setAnchorPoint(Point(0,0));
+  car->setContentSize(Size(50,50));
+  CCLOG("get node anchor pos : %f,%f",car->getAnchorPoint().x,car->getAnchorPoint().y);
+  
+
   auto carbody = PhysicsBody::createBox(Size(50,50),PhysicsMaterial(0,0,0.9));
   carbody->setCategoryBitmask(0x00000010);
   //  carbody->setContactTestBitmask(0x00000010);
