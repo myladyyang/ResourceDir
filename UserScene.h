@@ -19,19 +19,27 @@ class UserScene :public cocos2d::Scene{
   virtual WorldLayer* getWorldLayer() ;
   virtual void AddNodetoWorld(Node*,int);
   void addPlayer(Valkyrie * p);
+  
 
-
-  virtual bool initCache(const std::string jsonfile);
+  bool initCache(const std::string jsonfile);
+  
+  float getInitPercent(){return m_percent;}
 
   static Scene* create();
+
  protected:
+
+  bool b_init;
   void onNodeTouchedBegan(cocos2d::Node*,cocos2d::Point);
   void onNodeTouchedEnd(cocos2d::Node*);
   void onWorldTouchedBegan(cocos2d::Point);
   void onWorldTouchedEnd();
 
-  
-  
+  void initProgress(float percent);
+
+  virtual bool SceneBuild();
+  //if you don't use initCahe, use this
+  void setinit(bool init){b_init = init;}
 #if CC_USE_PHYSICS
   void update(float dt) override;
 #endif
@@ -39,6 +47,8 @@ class UserScene :public cocos2d::Scene{
   ~UserScene();
   friend class WorldLayer;
  private:
+
+  float m_percent;
   void scheduleMove(float dt);
   Valkyrie * player;
   WorldLayer * worldlayer;

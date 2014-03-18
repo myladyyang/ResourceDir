@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "cocostudio/CocoStudio.h"
+#include "LoadScene.h"
 //#include "valkyrie.h"
 class GamePlay
 {
@@ -31,6 +32,8 @@ class GamePlay
   void BackToMenu(){};
   void end(){cocos2d::Director::getInstance()->end();}
   bool addScene(cocos2d::Scene* scene);
+  bool addLoadScene(LoadScene* scene);
+
   static GamePlay* m_game;
  private:
   //single

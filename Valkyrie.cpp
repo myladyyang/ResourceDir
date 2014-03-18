@@ -108,3 +108,8 @@ void Valkyrie::Stop(){
 bool Valkyrie::IsMoving(){
   return (getPhysicsBody()->getVelocity() != Point(0,0));
 }
+
+
+void Valkyrie::StopMoveAnimation(){
+  getAnimation()->stop();
+}

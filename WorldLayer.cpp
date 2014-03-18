@@ -11,7 +11,7 @@ bool WorldLayer::init(){
 
   //background,can be enhance by textcache.
   
-  background = Sprite::create("background.png");
+  background = Sprite::create("background.jpg");
   
   auto background_size = background->getContentSize();
   background->setAnchorPoint(Point(0,0));

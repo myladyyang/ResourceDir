@@ -1,22 +1,18 @@
 #include "TestScene.h"
 #include "Valkyrie.h"
+#include <unistd.h>
 USING_NS_CC;
 TestScene::TestScene():UserScene(){
   
   CCLOG("TestScene construct");
 }
 
+bool TestScene::SceneBuild(){
+  auto player = Valkyrie::create("wushen");
 
-bool TestScene::init(){
-  CCLOG("in Test Scene");
-  UserScene::init();
-
-  
-  initCache("player.ExportJson");
-  auto player = Valkyrie::create("player");
-  player->SetMoveAnimation("Animation1");
-  player->SetJumpAnimation("Animation1");
-  player->SetJump2Animation("Animation1");
+  player->SetMoveAnimation("run");
+  player->SetJumpAnimation("run");
+  player->SetJump2Animation("run");
 
   player->getPhysicsBody()->setCategoryBitmask(0x00000001);
   player->getPhysicsBody()->setContactTestBitmask(0x00000001);
@@ -41,6 +37,13 @@ bool TestScene::init(){
   car->setPosition(Point(GAME_WIDTH/2+200 ,getWorldLayer()->getGroundHeight()+150));
 
   AddNodetoWorld(car,1);
+  return true;
+}
+
+bool TestScene::init(){
+  UserScene::init();
+
+  initCache("wushen.ExportJson");
   
   return true;
 }

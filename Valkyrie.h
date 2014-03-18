@@ -38,6 +38,9 @@ class Valkyrie: public cocostudio::Armature{
   void SetMoveAnimation(std::string movestr){animation_move = movestr;}
   void SetJumpAnimation(std::string jumpstr){animation_jump = jumpstr;}
   void SetJump2Animation(std::string jump2str){animation_jump2 = jump2str;}
+
+  //only move need to stop..
+  void StopMoveAnimation();
  protected:
   Valkyrie();
   

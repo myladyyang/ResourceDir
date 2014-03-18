@@ -1,6 +1,7 @@
 #include "GamePlay.h"
 #include "HelloWorldScene.h"
 #include "TestScene.h"
+#include "LoadScene.h"
 #define COCOS2D_DEBUG 1
 USING_NS_CC;
 
@@ -34,11 +35,22 @@ GamePlay::~GamePlay(){
 }
 
 bool GamePlay::addScene(Scene* scene){
-  if( currentScene == 9){
+  if( currentScene >= 9){
     return false;
   }
   m_arrayindex++;
   m_sceneArray[m_arrayindex] = scene;
+  return true;
+}
+
+bool GamePlay::addLoadScene(LoadScene* scene){
+  if(currentScene >= 8){//we need add two
+    return false;
+  }
+  m_arrayindex++;
+  m_sceneArray[m_arrayindex] = scene;
+  m_arrayindex++;
+  m_sceneArray[m_arrayindex] = scene->getUserScene();
   return true;
 }
 
@@ -51,6 +63,7 @@ void GamePlay::NextScene(){
 #endif
   }
   currentScene++;
+  CCLOG("current scene :%d",currentScene);
   Director::getInstance()->replaceScene(TransitionFade::create(2,m_sceneArray[currentScene]));
 }
 
@@ -59,10 +72,11 @@ void GamePlay::NextScene(){
 bool GamePlay::init(){
   //init others, like layers, players, and data or something
   //now we only need add scene, gameplay init with sample scene
-  
+  auto u_scene = TestScene::create();
+  auto load = LoadScene::create(u_scene);
 
-  addScene(TestScene::create());
-  addScene(TestScene::create());
+
+  addLoadScene(load);
   return true;
   
 }

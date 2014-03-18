@@ -11,11 +11,16 @@ void UserScene::end(){
 
 UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL),battlelayer(NULL){
   ScreenSize = Size(GAME_WIDTH,GAME_HEIGHT);
-
+  b_init = false;
+  m_percent = 0;
 }
 
 UserScene::~UserScene(){
 
+}
+
+bool UserScene::SceneBuild(){
+  return true;
 }
 
 bool UserScene::init(){
@@ -41,6 +46,8 @@ bool UserScene::init(){
   this->addChild(battlelayer);
 
   WorldSize = worldlayer->getWorldSize();
+
+
   return true;
 }
 
@@ -50,8 +57,6 @@ Scene * UserScene::create(){
   Scene *ret = new UserScene();
   if(ret && ret->init()){
     ret->autorelease();
-    //we set the physical world property here
-
 
     return ret;
   }
@@ -79,6 +84,9 @@ void UserScene::update(float delta){
     {
       _physicsWorld->update(delta);
     }
+  if(!b_init){
+    return;
+  }
   Point ppnew = player->getPosition();
   auto pp2 = ppnew;
   //perforance enhanced here
@@ -111,8 +119,18 @@ void UserScene::scheduleMove(float dt){
   player->Move(toward);
 }
 
+void UserScene::initProgress(float percent){
+
+  if(    percent == 1.0){
+    b_init = SceneBuild();
+  }
+  m_percent = percent;
+
+
+}
+
 bool UserScene::initCache(const std::string json){
-  cocostudio::ArmatureDataManager::getInstance()->addArmatureFileInfo(json);
+  cocostudio::ArmatureDataManager::getInstance()->addArmatureFileInfoAsync(json,this,schedule_selector(UserScene::initProgress));
   return true;
 }
 
@@ -185,4 +203,5 @@ void UserScene::onWorldTouchedBegan(Point tp){
 
 void UserScene::onWorldTouchedEnd(){
   unschedule(schedule_selector(UserScene::scheduleMove));
+  player->StopMoveAnimation();
 }
