@@ -142,7 +142,7 @@ void UserScene::onNodeTouchedBegan(Node* node,Point tp){
   CCLOG("touch at node: %d",tag);
   if (tag == 99){
     auto basic = node->getPosition();
-    dynamic_cast<BattleLayer*>( node)->ButtonClick(Point(tp.x-basic.x,tp.y-basic.y));
+    onButtonClick(dynamic_cast<BattleLayer*>( node)->ButtonClick(Point(tp.x-basic.x,tp.y-basic.y)));
   }
   else{
     battlelayer->FadeIn();
@@ -216,4 +216,18 @@ void UserScene::onWorldTouchedBegan(Point tp){
 void UserScene::onWorldTouchedEnd(){
   unschedule(schedule_selector(UserScene::scheduleMove));
   player->StopMoveAnimation();
+}
+
+void UserScene::onButtonClick(BT_NUM bn){
+  switch(bn){
+  case BT_NUM::Button_A:
+    CCLOG("btn A clict");
+    break;
+  case BT_NUM::Button_B:
+    break;
+  case BT_NUM::Button_C:
+    break;
+  case BT_NUM::Button_D:
+    break;
+  }
 }

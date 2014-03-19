@@ -35,6 +35,8 @@ class UserScene :public cocos2d::Scene{
   void onWorldTouchedBegan(cocos2d::Point);
   void onWorldTouchedEnd();
 
+  void onButtonClick(BT_NUM bn);
+
   void initProgress(float percent);
 
   virtual bool SceneBuild();

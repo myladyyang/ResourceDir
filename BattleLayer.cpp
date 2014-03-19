@@ -50,11 +50,12 @@ bool BattleLayer::init(){
   return true;
 }
 
-void BattleLayer::ButtonClick(Point tp){
+BT_NUM BattleLayer::ButtonClick(Point tp){
   if (tp.x >0 && tp.x < 28){
     b_act1->setTexture("button2.jpg");
   }
   CCLOG("button click");
+  return BT_NUM::Button_A;
 }
 
 void BattleLayer::FadeOut(){
