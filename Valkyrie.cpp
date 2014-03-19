@@ -30,6 +30,8 @@ bool Valkyrie::init(const std::string& name){
   setPhysicsBody(body);
   
   setScale(SCALE);
+
+
   return true;
 }
 

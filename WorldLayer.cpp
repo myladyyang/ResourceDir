@@ -40,7 +40,6 @@ bool WorldLayer::init(){
 
 
 bool WorldLayer::TouchesBegan(cocos2d::Touch* touch,cocos2d::Event* event){
-  CCLOG("worldlayer touch");
   
   auto tp =  touch->getLocationInView();
   tp = Director::getInstance()->convertToGL(tp);

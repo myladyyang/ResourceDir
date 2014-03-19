@@ -41,6 +41,7 @@ class Valkyrie: public cocostudio::Armature{
 
   //only move need to stop..
   void StopMoveAnimation();
+
  protected:
   Valkyrie();
   
@@ -50,7 +51,6 @@ class Valkyrie: public cocostudio::Armature{
   ActionState action_state;
   bool toward;
   friend class UserScene;
-  
 
  private:
   std::string animation_move;

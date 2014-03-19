@@ -8,11 +8,11 @@ TestScene::TestScene():UserScene(){
 }
 
 bool TestScene::SceneBuild(){
-  auto player = Valkyrie::create("wushen");
+  auto player = Valkyrie::create("player");
 
-  player->SetMoveAnimation("run");
-  player->SetJumpAnimation("run");
-  player->SetJump2Animation("run");
+  player->SetMoveAnimation("Animation1");
+  player->SetJumpAnimation("Animation1");
+  player->SetJump2Animation("Animation1");
 
   player->getPhysicsBody()->setCategoryBitmask(0x00000001);
   player->getPhysicsBody()->setContactTestBitmask(0x00000001);
@@ -20,13 +20,13 @@ bool TestScene::SceneBuild(){
 
   addPlayer(player);
 
-  auto car = Sprite::create("button1.jpg");
-  //  car->setAnchorPoint(Point(0,0));
-  car->setContentSize(Size(50,50));
-  CCLOG("get node anchor pos : %f,%f",car->getAnchorPoint().x,car->getAnchorPoint().y);
+  auto car = Sprite::create("boss.jpg");
+  car->setScale(0.5);
+  car->setContentSize(Size(217,233));
+
   
 
-  auto carbody = PhysicsBody::createBox(Size(50,50),PhysicsMaterial(0,0,0.9));
+  auto carbody = PhysicsBody::createBox(Size(108.5,116.5),PhysicsMaterial(0,0,0.9));
   carbody->setCategoryBitmask(0x00000010);
   //  carbody->setContactTestBitmask(0x00000010);
   carbody->setCollisionBitmask(0x00000010);
@@ -34,7 +34,7 @@ bool TestScene::SceneBuild(){
   carbody->setDynamic(false);
   
   car->setPhysicsBody(carbody);
-  car->setPosition(Point(GAME_WIDTH/2+200 ,getWorldLayer()->getGroundHeight()+150));
+  car->setPosition(Point(GAME_WIDTH/2+200 ,getWorldLayer()->getGroundHeight() + 58.25));
 
   AddNodetoWorld(car,1);
   return true;
@@ -43,7 +43,7 @@ bool TestScene::SceneBuild(){
 bool TestScene::init(){
   UserScene::init();
 
-  initCache("wushen.ExportJson");
+  initCache("player.ExportJson");
   
   return true;
 }

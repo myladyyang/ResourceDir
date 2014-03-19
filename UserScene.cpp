@@ -39,11 +39,11 @@ bool UserScene::init(){
   worldlayer = WorldLayer::create();
   worldlayer->setUserScene(this);
 
+  battlelayer = BattleLayer::create();
+  
+  worldlayer->addChild(battlelayer,3);
   this->addChild(syslayer);
   this->addChild(worldlayer);
-
-  battlelayer = BattleLayer::create();
-  this->addChild(battlelayer);
 
   WorldSize = worldlayer->getWorldSize();
 
@@ -135,16 +135,28 @@ bool UserScene::initCache(const std::string json){
 }
 
 void UserScene::onNodeTouchedBegan(Node* node,Point tp){
-  CCLOG("click node position:   %f - %f",node->getPosition().x,node->getPosition().y);
-  auto body = node->getPhysicsBody();
-  CCLOG("phy body at %f - %f",body->getPosition().x,body->getPosition().y);
-  battlelayer->setPosition(tp);
-  battlelayer->FadeIn();
-  //  battlelayer->setVisible(true);
-
+  if(node ==NULL){
+    CCLOG("NULL node touched");
+  }
+  auto tag = node->getTag();
+  CCLOG("touch at node: %d",tag);
+  if (tag == 99){
+    auto basic = node->getPosition();
+    dynamic_cast<BattleLayer*>( node)->ButtonClick(Point(tp.x-basic.x,tp.y-basic.y));
+  }
+  else{
+    battlelayer->FadeIn();
+    auto pos = node->getPosition();
+    auto scale = node->getScale();
+    pos = Point(pos.x + (node->getContentSize().width/2)*scale,pos.y);
+    battlelayer->setPosition(pos);
+  }
 }
 
-void UserScene::onNodeTouchedEnd(Node*){
+void UserScene::onNodeTouchedEnd(Node* node){
+  // battlelayer->FadeOut();
+  // battlelayer->setPosition(Point(-100,-100));
+  // CCLOG("touch node end , remove the battle layer");
 
 }
 

@@ -53,7 +53,8 @@ class UserScene :public cocos2d::Scene{
   Valkyrie * player;
   WorldLayer * worldlayer;
   SysLayer * syslayer;
-  BattleLayer * battlelayer;
+  
+  BattleLayer* battlelayer;
 
   cocos2d::Point pp;//player position
   cocos2d::Size WorldSize;

@@ -9,10 +9,12 @@ class BattleLayer: public cocos2d::LayerColor{
   virtual bool init();
   virtual void FadeOut();
   virtual void FadeIn();
+  void  ButtonClick(cocos2d::Point);
   CREATE_FUNC(BattleLayer);
+ protected:
 
  private:
-  
+  int clicknum;
   
   cocos2d::Sprite * b_act1;
   cocos2d::Sprite * b_act2;
