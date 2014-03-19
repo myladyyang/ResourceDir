@@ -150,6 +150,7 @@ void UserScene::onNodeTouchedBegan(Node* node,Point tp){
     auto scale = node->getScale();
     pos = Point(pos.x + (node->getContentSize().width/2)*scale,pos.y);
     battlelayer->setPosition(pos);
+    getPhysicsWorld()->setSpeed(0);
   }
 }
 

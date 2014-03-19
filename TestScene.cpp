@@ -24,7 +24,7 @@ bool TestScene::SceneBuild(){
   car->setScale(0.5);
   car->setContentSize(Size(217,233));
 
-  
+
 
   auto carbody = PhysicsBody::createBox(Size(108.5,116.5),PhysicsMaterial(0,0,0.9));
   carbody->setCategoryBitmask(0x00000010);
@@ -37,6 +37,20 @@ bool TestScene::SceneBuild(){
   car->setPosition(Point(GAME_WIDTH/2+200 ,getWorldLayer()->getGroundHeight() + 58.25));
 
   AddNodetoWorld(car,1);
+
+  // //test pause
+  // auto mo = Node::create();
+  // mo->setContentSize(Size(50,50));
+  // auto mobody = PhysicsBody::createBox(Size(50,50),PhysicsMaterial(0,0,0));
+  // mobody->setCategoryBitmask(0x00000100);
+  // mobody->setCollisionBitmask(0x00000100);
+  // mobody->setVelocity(Vect(20,0));
+  // mo->setPhysicsBody(mobody);
+  // mo->setPosition(Point(25,getWorldLayer()->getGroundHeight()+25));
+  
+  // AddNodetoWorld(mo,2);
+  
+
   return true;
 }
 
