@@ -22,7 +22,10 @@ bool WorldLayer::init(){
   ground->setPosition(Point(GAME_WIDTH,GAME_HEIGHT*GROUND_RATIO));
 
   auto groundbody = PhysicsBody::createBox(Size(GAME_WIDTH*2,1),PhysicsMaterial(100,0.0,1.0));
-
+  groundbody->setCategoryBitmask(GROUND_CATA_MASK);
+  groundbody->setContactTestBitmask(GROUND_CONTACT_MASK);
+  //CCLOG("ground mask: %d,%d,%d",VALKYRIE_CATA_MASK,STATIC_OBJ_CATA_MASK,INTERACT_OBJ_CATA_MASK);
+  groundbody->setCollisionBitmask(GROUND_COLLISION_MASK);
   groundbody->setDynamic(false);
   ground->setPhysicsBody(groundbody);
   addChild(ground);

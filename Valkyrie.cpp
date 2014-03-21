@@ -1,5 +1,5 @@
 #include "Valkyrie.h"
-
+#include "common.h"
 USING_NS_CC;
 
 const PhysicsMaterial common_material(0.0f,0.1f,0.3f);
@@ -23,6 +23,17 @@ bool Valkyrie::init(const std::string& name){
 
   //phy
   auto body = PhysicsBody::createBox(Size(getContentSize().width * SCALE,getContentSize().height * SCALE),common_material);
+
+  // body->setCategoryBitmask(VALKYRIE_CATA_MASK);
+  // body->setContactTestBitmask(VALKYRIE_CONTACT_MASK);
+  //body->setCollisionBitmask(0xFFFFFFFF);
+  
+  auto range = PhysicsShapeCircle::create(100);
+  range->setCategoryBitmask(RANGE_CATA_MASK);
+  range->setContactTestBitmask(RANGE_CONTACT_MASK);
+  range->setCollisionBitmask(RANGE_COLLISION_MASK);
+  range->setMass(0.1f);
+  body->addShape(range);
   body->setRotationEnable(false);
   body->setDynamic(true);
   

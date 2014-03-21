@@ -14,9 +14,8 @@ bool TestScene::SceneBuild(){
   player->SetJumpAnimation("Animation1");
   player->SetJump2Animation("Animation1");
 
-  player->getPhysicsBody()->setCategoryBitmask(0x00000001);
-  player->getPhysicsBody()->setContactTestBitmask(0x00000001);
-  player->getPhysicsBody()->setCollisionBitmask(0x00000001);
+
+
 
   addPlayer(player);
 
@@ -27,9 +26,9 @@ bool TestScene::SceneBuild(){
 
 
   auto carbody = PhysicsBody::createBox(Size(108.5,116.5),PhysicsMaterial(0,0,0.9));
-  carbody->setCategoryBitmask(0x00000010);
-  //  carbody->setContactTestBitmask(0x00000010);
-  carbody->setCollisionBitmask(0x00000010);
+  carbody->setCategoryBitmask(INTERACT_OBJ_CATA_MASK);
+  carbody->setContactTestBitmask(INTERACT_OBJ_CONTACT_MASK);
+  carbody->setCollisionBitmask(INTERACT_OBJ_COLLISION_MASK);
   carbody->setRotationEnable(false);
   carbody->setDynamic(false);
   
