@@ -10,18 +10,18 @@ const float SCALE = 0.1;
 
 enum class BattleState{
   MAXSATE,
-  NORMALSTATE
+    NORMALSTATE
     };
 
 enum class ActionState{
   MOVE,
-  JUMP,
-  JUMP2,
-  STANDBY,
+    JUMP,
+    JUMP2,
+    STANDBY,
   
     };
 class Valkyrie: public cocostudio::Armature{
- public:
+public:
   //actions
   void Move(bool toward);//toward >0, right, toward < 0 left
   void Jump(bool toward);
@@ -32,6 +32,13 @@ class Valkyrie: public cocostudio::Armature{
 
   ActionState getActionState(){return action_state;}
   void setActionState(ActionState state){action_state = state;}
+  
+  BattleState getBattleState(){return battle_state;}
+  void setBattleState(BattleState state);
+  
+  cocos2d::PhysicsShape* getRange(){return m_range;}
+
+
   bool IsMoving();
   bool getToward();
   
@@ -42,20 +49,22 @@ class Valkyrie: public cocostudio::Armature{
   //only move need to stop..
   void StopMoveAnimation();
 
- protected:
+protected:
   Valkyrie();
   
   float getXposition(){return getPosition().x;};
   
   BattleState battle_state;
   ActionState action_state;
+  int weapon_value;//this value reach to 10, change to battle status
   bool toward;
   friend class UserScene;
 
- private:
+private:
   std::string animation_move;
   std::string animation_jump;
   std::string animation_jump2;
+  cocos2d::PhysicsShape* m_range;
 };
 
 

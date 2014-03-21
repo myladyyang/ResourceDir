@@ -7,6 +7,7 @@ const PhysicsMaterial common_material(0.0f,0.1f,0.3f);
 
 Valkyrie::Valkyrie():Armature(){
   toward = true;
+  weapon_value =0;
 }
 
 bool Valkyrie::getToward(){
@@ -33,6 +34,9 @@ bool Valkyrie::init(const std::string& name){
   range->setContactTestBitmask(RANGE_CONTACT_MASK);
   range->setCollisionBitmask(RANGE_COLLISION_MASK);
   range->setMass(0.1f);
+  range->setTag(911);
+  m_range = range;
+  
   body->addShape(range);
   body->setRotationEnable(false);
   body->setDynamic(true);
@@ -73,7 +77,12 @@ void Valkyrie::Move(bool to){
 }
 
 void Valkyrie::Jump(bool to){
-
+  if (weapon_value <2){
+    weapon_value++;
+  }
+  else{
+    battle_state = BattleState::MAXSATE;
+  }
   bool doaction = false;
   switch(action_state){
   case ActionState::STANDBY:
@@ -125,4 +134,11 @@ bool Valkyrie::IsMoving(){
 
 void Valkyrie::StopMoveAnimation(){
   getAnimation()->stop();
+}
+
+void Valkyrie::setBattleState(BattleState state){
+  if (state == BattleState::NORMALSTATE){
+    weapon_value = 0;
+  }
+  battle_state = state;
 }

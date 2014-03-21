@@ -34,6 +34,8 @@ class UserScene :public cocos2d::Scene{
   void onNodeTouchedEnd(cocos2d::Node*);
   void onWorldTouchedBegan(cocos2d::Point);
   void onWorldTouchedEnd();
+  void onRangeContactBegan(cocos2d::Node* player,cocos2d::Node* inter_obj);
+
 
   void onButtonClick(BT_NUM bn);
 

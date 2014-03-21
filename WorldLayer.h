@@ -13,6 +13,7 @@ class WorldLayer:public cocos2d::Layer{
   virtual void TouchesEnded(cocos2d::Touch* touch, cocos2d::Event* event);
   
   virtual bool ContactBegan(cocos2d::EventCustom* event, const cocos2d::PhysicsContact& contact);
+  
   virtual void update(float dt) override;
   void setUserScene(UserScene* scene){userscene=scene;}
   

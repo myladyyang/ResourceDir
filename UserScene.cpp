@@ -143,15 +143,10 @@ void UserScene::onNodeTouchedBegan(Node* node,Point tp){
   if (tag == 99){
     auto basic = node->getPosition();
     onButtonClick(dynamic_cast<BattleLayer*>( node)->ButtonClick(Point(tp.x-basic.x,tp.y-basic.y)));
+    getPhysicsWorld()->setSpeed(3.0f);
+    player->setBattleState(BattleState::NORMALSTATE);
   }
-  else{
-    battlelayer->FadeIn();
-    auto pos = node->getPosition();
-    auto scale = node->getScale();
-    pos = Point(pos.x + (node->getContentSize().width/2)*scale,pos.y);
-    battlelayer->setPosition(pos);
-    getPhysicsWorld()->setSpeed(0);
-  }
+
 }
 
 void UserScene::onNodeTouchedEnd(Node* node){
@@ -230,5 +225,21 @@ void UserScene::onButtonClick(BT_NUM bn){
     break;
   case BT_NUM::Button_D:
     break;
+  }
+}
+
+
+void UserScene::onRangeContactBegan(Node* nodeA,Node* inter_obj){
+  
+  if (player->getBattleState() == BattleState::MAXSATE){
+    battlelayer->FadeIn();
+    auto pos = inter_obj->getPosition();
+    auto scale = inter_obj->getScale();
+    pos = Point(pos.x + (inter_obj->getContentSize().width/2)*scale,pos.y);
+    battlelayer->setPosition(pos);
+    getPhysicsWorld()->setSpeed(0);
+  }
+  else{
+    return;
   }
 }

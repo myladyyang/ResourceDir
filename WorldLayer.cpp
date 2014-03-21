@@ -3,11 +3,20 @@
 USING_NS_CC;
 bool WorldLayer::init(){
   Layer::init();
+
+  //touch event
   auto listener = EventListenerTouchOneByOne::create();
   listener->setSwallowTouches(true);
   listener->onTouchBegan = std::bind(&WorldLayer::TouchesBegan,this,std::placeholders::_1,std::placeholders::_2);
   listener->onTouchEnded = std::bind(&WorldLayer::TouchesEnded,this,std::placeholders::_1,std::placeholders::_2);
   Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener,this);
+
+  //contact event
+
+  auto contactlistener = EventListenerPhysicsContact::create();
+  contactlistener->onContactBegin = CC_CALLBACK_2(WorldLayer::ContactBegan,this);
+
+  Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactlistener,this);
 
   //background,can be enhance by textcache.
   
@@ -16,11 +25,12 @@ bool WorldLayer::init(){
   auto background_size = background->getContentSize();
   background->setAnchorPoint(Point(0,0));
   background->setPosition(0,0);
+  
   addChild(background);
   //ground
   ground = Node::create();
   ground->setPosition(Point(GAME_WIDTH,GAME_HEIGHT*GROUND_RATIO));
-
+  ground->setTag(888);
   auto groundbody = PhysicsBody::createBox(Size(GAME_WIDTH*2,1),PhysicsMaterial(100,0.0,1.0));
   groundbody->setCategoryBitmask(GROUND_CATA_MASK);
   groundbody->setContactTestBitmask(GROUND_CONTACT_MASK);
@@ -33,6 +43,7 @@ bool WorldLayer::init(){
   //world room
   auto room = Node::create();
   auto roombody = PhysicsBody::createEdgeBox(background_size);
+
   room->setPhysicsBody(roombody);
 
   room->setPosition(background_size.width/2,background_size.height/2);
@@ -77,6 +88,26 @@ void WorldLayer::TouchesEnded(cocos2d::Touch* touch, cocos2d::Event* event){
 }
 
 bool WorldLayer::ContactBegan(cocos2d::EventCustom* event, const cocos2d::PhysicsContact& contact){
+  //check our range shape
+  PhysicsShape* range_shape;
+  PhysicsShape* obj_shape;
+  if (contact.getShapeA()->getTag() == 911){
+    range_shape = contact.getShapeA();
+    obj_shape = contact.getShapeB();
+    CCLOG("tag of obj_shape %d",obj_shape->getBody()->getNode()->getTag());
+  }
+  else if(contact.getShapeB()->getTag() == 911){
+    range_shape = contact.getShapeB();
+    obj_shape = contact.getShapeA();
+    CCLOG("119 contact");
+  }
+  else{
+    
+    return true;
+  }
+  CCLOG("contact here!!!!");
+  userscene->onRangeContactBegan(range_shape->getBody()->getNode(),obj_shape->getBody()->getNode());
+  //  userscene->on
   return true;
 }
 
