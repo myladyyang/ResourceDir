@@ -50,10 +50,13 @@ class UserScene :public cocos2d::Scene{
   UserScene();
   ~UserScene();
   friend class WorldLayer;
+
  private:
 
   float m_percent;
   void scheduleMove(float dt);
+  void battlescale();
+  void unbattlescale();
   Valkyrie * player;
   WorldLayer * worldlayer;
   SysLayer * syslayer;
@@ -64,6 +67,8 @@ class UserScene :public cocos2d::Scene{
   cocos2d::Size WorldSize;
   cocos2d::Size ScreenSize;
   
+  bool m_scale;
+  float m_scale_thr;
 };
 
 

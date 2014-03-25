@@ -9,7 +9,7 @@ class GamePlay
 {
  public:
   //The start scene creator
-  static cocos2d::Scene* startScene();
+  static cocos2d::Scene* startScene(float,float);
   
   static GamePlay* getInstance();
   virtual bool init();
@@ -33,7 +33,7 @@ class GamePlay
   void end(){cocos2d::Director::getInstance()->end();}
   bool addScene(cocos2d::Scene* scene);
   bool addLoadScene(LoadScene* scene);
-
+  void setRatio(float,float);
   static GamePlay* m_game;
  private:
   //single
@@ -49,6 +49,9 @@ class GamePlay
   cocos2d::Scene* m_sceneArray[10];
   int currentScene;
   int m_arrayindex;
+
+  float m_rx,m_ry;
+
 };
 
 

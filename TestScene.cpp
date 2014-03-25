@@ -34,7 +34,7 @@ bool TestScene::SceneBuild(){
   
   car->setPhysicsBody(carbody);
   car->setPosition(Point(GAME_WIDTH/2+200 ,getWorldLayer()->getGroundHeight() + 58.25));
-
+  car->setTag(109);
   AddNodetoWorld(car,1);
 
   // //test pause

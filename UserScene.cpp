@@ -9,7 +9,7 @@ void UserScene::end(){
   GamePlay::getInstance()->NextScene();
 }
 
-UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL),battlelayer(NULL){
+UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL),battlelayer(NULL),m_scale(false),m_scale_thr(1.0){
   ScreenSize = Size(GAME_WIDTH,GAME_HEIGHT);
   b_init = false;
   m_percent = 0;
@@ -40,8 +40,8 @@ bool UserScene::init(){
   worldlayer->setUserScene(this);
 
   battlelayer = BattleLayer::create();
-  
-  worldlayer->addChild(battlelayer,3);
+
+  worldlayer->addChild(battlelayer,10);
   this->addChild(syslayer);
   this->addChild(worldlayer);
 
@@ -90,11 +90,11 @@ void UserScene::update(float delta){
   Point ppnew = player->getPosition();
   auto pp2 = ppnew;
   //perforance enhanced here
-  if (WorldSize.width - player->getXposition() <= ScreenSize.width/2){
+  if (player->getXposition() <= ScreenSize.width/2+player->getContentSize().width/20){
     ppnew.x = pp.x;
     
   }
-  if (player->getXposition() < ScreenSize.width/2 +player->getContentSize().width/20){
+  if (player->getXposition() >= WorldSize.width-ScreenSize.width/2){
     ppnew.x = pp.x;
   }
    if (player->getActionState() != ActionState::STANDBY){
@@ -102,9 +102,27 @@ void UserScene::update(float delta){
 
    }
    pp = pp2;
-  //update camera..
+  //scale here
+   if(m_scale  ){
+     battlescale();
+   }
 }
 #endif
+
+void UserScene::battlescale(){
+  if (m_scale_thr <= SCALE_THR){
+    m_scale_thr += 0.01;
+    setScale(m_scale_thr);
+  }
+}
+
+void UserScene::unbattlescale(){
+
+  m_scale_thr = 1.0;
+  m_scale= false;
+  setScale(1.0);
+}
+
 
 void UserScene::addPlayer(Valkyrie * p){
   player = p;
@@ -145,6 +163,7 @@ void UserScene::onNodeTouchedBegan(Node* node,Point tp){
     onButtonClick(dynamic_cast<BattleLayer*>( node)->ButtonClick(Point(tp.x-basic.x,tp.y-basic.y)));
     getPhysicsWorld()->setSpeed(3.0f);
     player->setBattleState(BattleState::NORMALSTATE);
+    unbattlescale();
   }
 
 }
@@ -230,14 +249,13 @@ void UserScene::onButtonClick(BT_NUM bn){
 
 
 void UserScene::onRangeContactBegan(Node* nodeA,Node* inter_obj){
-  
   if (player->getBattleState() == BattleState::MAXSATE){
     battlelayer->FadeIn();
     auto pos = inter_obj->getPosition();
-    auto scale = inter_obj->getScale();
-    pos = Point(pos.x + (inter_obj->getContentSize().width/2)*scale,pos.y);
+    pos = Point(pos.x,pos.y);
     battlelayer->setPosition(pos);
     getPhysicsWorld()->setSpeed(0);
+    m_scale = true;
   }
   else{
     return;

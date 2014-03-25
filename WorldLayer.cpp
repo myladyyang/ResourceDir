@@ -3,7 +3,7 @@
 USING_NS_CC;
 bool WorldLayer::init(){
   Layer::init();
-
+  setTag(108);
   //touch event
   auto listener = EventListenerTouchOneByOne::create();
   listener->setSwallowTouches(true);
@@ -25,13 +25,13 @@ bool WorldLayer::init(){
   auto background_size = background->getContentSize();
   background->setAnchorPoint(Point(0,0));
   background->setPosition(0,0);
-  
+  background->setTag(106);
   addChild(background);
   //ground
   ground = Node::create();
-  ground->setPosition(Point(GAME_WIDTH,GAME_HEIGHT*GROUND_RATIO));
+  ground->setPosition(Point(background_size.width/2,GAME_HEIGHT*GROUND_RATIO));
   ground->setTag(888);
-  auto groundbody = PhysicsBody::createBox(Size(GAME_WIDTH*2,1),PhysicsMaterial(100,0.0,1.0));
+  auto groundbody = PhysicsBody::createBox(Size(background_size.width,1),PhysicsMaterial(100,0.0,1.0));
 
   groundbody->setCategoryBitmask(GROUND_CATA_MASK);
   groundbody->setContactTestBitmask(GROUND_CONTACT_MASK);
@@ -44,7 +44,9 @@ bool WorldLayer::init(){
   //world room
   auto room = Node::create();
   auto roombody = PhysicsBody::createEdgeBox(background_size);
-
+  roombody->setCategoryBitmask(ROOM_CATA_MASK);
+  roombody->setContactTestBitmask(NONE_MASK);
+  roombody->setCollisionBitmask(ANY_MASK);
   room->setPhysicsBody(roombody);
 
   room->setPosition(background_size.width/2,background_size.height/2);
@@ -58,20 +60,38 @@ bool WorldLayer::TouchesBegan(cocos2d::Touch* touch,cocos2d::Event* event){
   
   auto tp =  touch->getLocationInView();
   tp = Director::getInstance()->convertToGL(tp);
-  int max_zorder = 0;
+  int max_zorder = -2;
   Node* ret = NULL;
   for (const auto &child:_children){
-    if(child->getBoundingBox().containsPoint(tp)){
 
-      if (child->getZOrder() > max_zorder) ret = child;
+
+    auto box = child->getBoundingBox();
+    if (child->getTag() == BATTLE_TAG){
+      CCLOG("click on point %f, %f",tp.x,tp.y);
+      CCLOG("box of 99 is : %f,%f,%f,%f",box.size.width,box.size.height,box.origin.x,box.origin.y);
+      CCLOG("battle layer content size: %f %f",child->getContentSize().width,child->getContentSize().height);
+    }
+    if(child->getBoundingBox().containsPoint(tp)){
+      if (child->getTag() == 106){
+	continue;
+      }
+      CCLOG("touch obj's tag is : %d",child->getTag());
+      CCLOG("max zorder is : %d",max_zorder);
+      if (child->getZOrder() > max_zorder){
+	max_zorder=child->getZOrder();
+	CCLOG("Change order");
+	ret = child;
+      }
     }
   }
   if(userscene != NULL){
     if(ret != NULL){//node touch
       m_cTouchNode = ret;
+      CCLOG("node touch");
       userscene->onNodeTouchedBegan(ret,tp);
     }
     else{//world touch
+      CCLOG("world touch");
       userscene->onWorldTouchedBegan(tp);
     }
   }

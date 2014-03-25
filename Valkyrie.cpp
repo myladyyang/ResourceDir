@@ -29,22 +29,23 @@ bool Valkyrie::init(const std::string& name){
    body->setContactTestBitmask(VALKYRIE_CONTACT_MASK);
    body->setCollisionBitmask(0xFFFFFFFF);
   
-  auto range = PhysicsShapeCircle::create(100);
-  range->setCategoryBitmask(RANGE_CATA_MASK);
-  range->setContactTestBitmask(RANGE_CONTACT_MASK);
-  range->setCollisionBitmask(RANGE_COLLISION_MASK);
-  range->setMass(0.1f);
-  range->setTag(911);
-  m_range = range;
+   m_range = PhysicsShapeCircle::create(100);
+   m_range->setCategoryBitmask(RANGE_CATA_MASK);
+   m_range->setContactTestBitmask(RANGE_CONTACT_MASK);
+   m_range->setCollisionBitmask(RANGE_COLLISION_MASK);
+   m_range->setMass(0.1f);
+   m_range->setTag(911);
+   body->addShape(m_range);
+   
+   CCLOG("m_range 's tag is %d",m_range->getTag());
+   
+   body->setRotationEnable(false);
+   body->setDynamic(true);
   
-  body->addShape(range);
-  body->setRotationEnable(false);
-  body->setDynamic(true);
   
+   setPhysicsBody(body);
   
-  setPhysicsBody(body);
-  
-  setScale(SCALE);
+   setScale(SCALE);
 
 
   return true;
@@ -82,6 +83,8 @@ void Valkyrie::Jump(bool to){
   }
   else{
     battle_state = BattleState::MAXSATE;
+    CCLOG("m_range's tag2 is %d",m_range->getTag());
+
   }
   bool doaction = false;
   switch(action_state){
@@ -137,8 +140,7 @@ void Valkyrie::StopMoveAnimation(){
 }
 
 void Valkyrie::setBattleState(BattleState state){
-  if (state == BattleState::NORMALSTATE){
-    weapon_value = 0;
-  }
+
+  weapon_value = 0;
   battle_state = state;
 }

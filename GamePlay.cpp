@@ -5,14 +5,20 @@
 #define COCOS2D_DEBUG 1
 USING_NS_CC;
 
-Scene* GamePlay::startScene(){
+Scene* GamePlay::startScene(float ratio_x,float ratio_y){
   auto gameplay = GamePlay::getInstance();
-
+  gameplay->setRatio(ratio_x,ratio_y);
   return gameplay->getScene(0);
 
 }
+
+void GamePlay::setRatio(float ratio_x,float ratio_y){
+  m_rx = ratio_x;
+  m_ry = ratio_y;
+}
+
 GamePlay* GamePlay::m_game = NULL;
-GamePlay::GamePlay():currentScene(0),m_arrayindex(-1){
+GamePlay::GamePlay():currentScene(0),m_arrayindex(-1),m_rx(1.0),m_ry(1.0){
   for(int i=0;i<10;i++){
     m_sceneArray[i] = NULL;
   }
@@ -38,6 +44,8 @@ bool GamePlay::addScene(Scene* scene){
   if( currentScene >= 9){
     return false;
   }
+  scene->setScaleX(m_rx);
+  scene->setScaleY(m_ry);
   m_arrayindex++;
   m_sceneArray[m_arrayindex] = scene;
   return true;
@@ -47,6 +55,8 @@ bool GamePlay::addLoadScene(LoadScene* scene){
   if(currentScene >= 8){//we need add two
     return false;
   }
+  scene->setScaleX(m_rx);
+  scene->setScaleY(m_ry);
   m_arrayindex++;
   m_sceneArray[m_arrayindex] = scene;
   m_arrayindex++;

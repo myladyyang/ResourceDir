@@ -3,10 +3,14 @@
 
 USING_NS_CC;
 
-AppDelegate::AppDelegate() {
-
+AppDelegate::AppDelegate(float ratio_x,float ratio_y) {
+  m_rx = ratio_x;
+  m_ry = ratio_y;
 }
-
+AppDelegate::AppDelegate() {
+  m_rx = 1.0;
+  m_ry = 1.0;
+}
 AppDelegate::~AppDelegate() 
 {
 }
@@ -15,7 +19,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // initialize director
     auto director = Director::getInstance();
     auto eglView = EGLView::getInstance();
-
+    
     director->setOpenGLView(eglView);
 	
     // turn on display FPS
@@ -25,7 +29,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    auto scene = GamePlay::startScene();
+    auto scene = GamePlay::startScene(m_rx,m_ry);
  
     // run
     if (scene){

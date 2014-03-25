@@ -3,13 +3,13 @@ USING_NS_CC;
 
 
 bool BattleLayer::init(){
-  if( !LayerColor::initWithColor(Color4B::WHITE)){
+  if( !LayerColor::initWithColor(Color4B::BLACK)){
     return false;
   }
   clicknum = 0;
   setTag(99);
   CCLOG("Battle init start");
-  setAnchorPoint(Point(0,0));
+  
   setPosition(Point(-100,-100));
 
   this->setContentSize(Size(112,20));
@@ -42,7 +42,7 @@ bool BattleLayer::init(){
   this->addChild(b_act2,11);
   this->addChild(b_act3,11);
   this->addChild(b_act4,11);
-
+  
   // auto listener = EventListenerTouchOneByOne::create();
   // listener->setSwallowTouches(true);
   // listener->onTouchBegan = std::bind(&BattleLayer::TouchesBegan,this,std::placeholders::_1,std::placeholders::_2);
