@@ -34,6 +34,9 @@ class GamePlay
   bool addScene(cocos2d::Scene* scene);
   bool addLoadScene(LoadScene* scene);
   void setRatio(float,float);
+  void SaveView();
+  float getSavedY();
+  float getSavedX();
   static GamePlay* m_game;
  private:
   //single
@@ -51,7 +54,7 @@ class GamePlay
   int m_arrayindex;
 
   float m_rx,m_ry;
-
+  kmMat4 m_view;
 };
 
 

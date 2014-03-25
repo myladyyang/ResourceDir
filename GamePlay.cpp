@@ -90,3 +90,16 @@ bool GamePlay::init(){
   return true;
   
 }
+
+void GamePlay::SaveView(){
+  kmGLGetMatrix(KM_GL_MODELVIEW,&m_view);
+  // CCLOG("view at %f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f",m_view.mat[0],m_view.mat[1],m_view.mat[2],m_view.mat[3],m_view.mat[4],m_view.mat[5],m_view.mat[6],m_view.mat[7],m_view.mat[8],m_view.mat[9],m_view.mat[10],m_view.mat[11],m_view.mat[12],m_view.mat[13],m_view.mat[14],m_view.mat[15]);
+}
+
+
+float GamePlay::getSavedY(){
+  return m_view.mat[13];
+}
+float GamePlay::getSavedX(){
+  return m_view.mat[12];
+}

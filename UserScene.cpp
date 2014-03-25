@@ -97,8 +97,14 @@ void UserScene::update(float delta){
   if (player->getXposition() >= WorldSize.width-ScreenSize.width/2){
     ppnew.x = pp.x;
   }
+  if (player->getPosition().y < ScreenSize.height*3/4){
+
+    ppnew.y = pp.y;
+  }
+      
    if (player->getActionState() != ActionState::STANDBY){
      Director::getInstance()->setModelView(-(ppnew.x -pp.x),-(ppnew.y-pp.y),0);
+     //     CCLOG("opengl origin view : %f, %f",Director::getInstance()->getVisibleOrigin().x,Director::getInstance()->getVisibleOrigin().y);
 
    }
    pp = pp2;
@@ -201,7 +207,7 @@ void UserScene::onWorldTouchedBegan(Point tp){
       break;
     }
     else{
-
+      
       player->Jump(delta.x>0?true:false);
       break;
     }

@@ -52,7 +52,6 @@ class UserScene :public cocos2d::Scene{
   friend class WorldLayer;
 
  private:
-
   float m_percent;
   void scheduleMove(float dt);
   void battlescale();
