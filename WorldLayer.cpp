@@ -60,6 +60,7 @@ bool WorldLayer::TouchesBegan(cocos2d::Touch* touch,cocos2d::Event* event){
   
   auto tp =  touch->getLocationInView();
   tp = Director::getInstance()->convertToGL(tp);
+  tp = convertToNodeSpace(tp);
   int max_zorder = -2;
   Node* ret = NULL;
   for (const auto &child:_children){
