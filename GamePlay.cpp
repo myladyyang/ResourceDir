@@ -133,5 +133,10 @@ void GamePlay::unFollow(){
   auto newx = newVec.mat[12];
   auto newy = newVec.mat[13];
   Director::getInstance()->setModelView(m_view.mat[12] - newx,m_view.mat[13] - newy,0);
+  //debug code
+  SaveView();
+  CCLOG("camera position: %f,%f",getSavedX(),getSavedY());
+
+  
 }
 

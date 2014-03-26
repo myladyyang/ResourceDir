@@ -72,6 +72,10 @@ class UserScene :public cocos2d::Scene{
   
   bool m_scale;
   float m_scale_thr;
+
+  bool xupdate;
+  bool yupdate;
+  bool b_pause;
 };
 
 

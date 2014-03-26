@@ -14,6 +14,10 @@ UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL),batt
   ScreenSize = Size(GAME_WIDTH,GAME_HEIGHT);
   b_init = false;
   m_percent = 0;
+  xupdate = true;
+  yupdate = true;
+  //strange after pause the player positon still have one frame change, I guess the physic check pause after node check..., that's why I add this flag to force stop node update.
+  b_pause = false;
 }
 
 UserScene::~UserScene(){
@@ -96,17 +100,22 @@ void UserScene::update(float delta){
   Point ppnew = player->getPosition();
   auto pp2 = ppnew;
   //perforance enhanced here
-  if (player->getXposition() <= ScreenSize.width/2+player->getContentSize().width/20){
-    ppnew.x = pp.x;
+  if (player->getXposition() <= ScreenSize.width/2+player->getContentSize().width/20 || player->getXposition() >= WorldSize.width-ScreenSize.width/2){
+    if (xupdate == true){
+      xupdate = false;
+    }
+    else{
+      ppnew.x = pp.x;
+    }
   }
-  if (player->getXposition() >= WorldSize.width-ScreenSize.width/2){
-    ppnew.x = pp.x;
+  else{
+    xupdate = true;
   }
   if (player->getActionState() != ActionState::STANDBY){
      Director::getInstance()->setModelView(-(ppnew.x -pp.x),-(ppnew.y-pp.y),0);
   }
    pp = pp2;
-  //scale here
+   //  scale here
    if(m_scale  ){
      battlescale();
    }
@@ -134,6 +143,9 @@ void UserScene::addPlayer(Valkyrie * p){
   auto p_size = player->getContentSize();
   player->setPosition(Point(p_size.width/2*SCALE + GAME_WIDTH/2 ,worldlayer->getGroundHeight()+p_size.height/2*SCALE));
   pp = player->getPosition();
+  xupdate = pp.x > ScreenSize.width/2+player->getContentSize().width/20 ||pp.x < WorldSize.width-ScreenSize.width/2;
+  
+  
 }
 
 void UserScene::scheduleMove(float dt){
@@ -170,7 +182,7 @@ void UserScene::onNodeTouchedBegan(Node* node,Point tp){
     getPhysicsWorld()->setSpeed(3.0f);
     player->setBattleState(BattleState::NORMALSTATE);
     unbattlescale();
-    GamePlay::getInstance()->unFollow();
+    //    GamePlay::getInstance()->unFollow();
   }
 
 }
@@ -262,8 +274,9 @@ void UserScene::onRangeContactBegan(Node* nodeA,Node* inter_obj){
     pos = Point(pos.x,pos.y);
     battlelayer->setPosition(pos);
     getPhysicsWorld()->setSpeed(0);
+    b_pause = true;
     m_scale = true;
-    GamePlay::getInstance()->FollowNode(player);
+    //    GamePlay::getInstance()->FollowNode(player);
   }
   else{
     return;
