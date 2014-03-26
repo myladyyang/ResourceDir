@@ -53,7 +53,7 @@ class GamePlay
   /* Valkyrie * m_lenneth;//Valkyrie inherit from cocostudio::Armature */
   /* Room * m_room; //Room contain everything other than valkyrie */
   /* Camera * m_camera;  */
-  
+
   cocos2d::Scene* m_sceneArray[10];
   int currentScene;
   int m_arrayindex;

@@ -17,7 +17,8 @@ class LoadScene:public cocos2d::Scene{
   void load() ;
   void update(float dt) override;
  private:
-  
+  //for loading less than fade time...
+  int loadtime;
   bool b_ended;
   UserScene* p_scene;
   SysLayer * syslayer;

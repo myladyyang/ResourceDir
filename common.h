@@ -39,7 +39,7 @@
 #define BATTLE_TAG 99
 #define CAR_TAG 109
 
-
-
+#define FADETIME 2
+#define FPS 60
 
 #endif

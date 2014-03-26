@@ -54,6 +54,7 @@ bool TestScene::SceneBuild(){
 }
 
 void TestScene::load(){
+  CCLOG("TestScene load");
   UserScene::load();
   initCache("player.ExportJson");
 

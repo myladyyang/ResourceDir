@@ -38,6 +38,7 @@ bool UserScene::init(){
 }
 
 void UserScene::load(){
+  CCLOG("User Scene load");
   getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     
   getPhysicsWorld()->setGravity(Vect(0,-100));
@@ -115,7 +116,7 @@ void UserScene::update(float delta){
 void UserScene::battlescale(){
   if (m_scale_thr <= SCALE_THR){
     m_scale_thr += 0.01;
-    worldlayer->setScale(m_scale_thr);
+    setScale(m_scale_thr);
   }
 }
 
@@ -123,7 +124,7 @@ void UserScene::unbattlescale(){
 
   m_scale_thr = 1.0;
   m_scale= false;
-  worldlayer->setScale(1.0);
+  setScale(1.0);
 }
 
 
@@ -141,8 +142,9 @@ void UserScene::scheduleMove(float dt){
 }
 
 void UserScene::initProgress(float percent){
-  
+  CCLOG("in progress : %f",percent);
   if(    percent == 1.0){
+    CCLOG("Scene build called");
     b_init = SceneBuild();
   }
   m_percent = percent;
@@ -151,6 +153,7 @@ void UserScene::initProgress(float percent){
 }
 
 bool UserScene::initCache(const std::string json){
+
   cocostudio::ArmatureDataManager::getInstance()->addArmatureFileInfoAsync(json,this,schedule_selector(UserScene::initProgress));
   return true;
 }

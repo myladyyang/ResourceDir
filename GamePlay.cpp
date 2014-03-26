@@ -20,6 +20,7 @@ void GamePlay::setRatio(float ratio_x,float ratio_y){
 
 GamePlay* GamePlay::m_game = NULL;
 GamePlay::GamePlay():currentScene(0),m_arrayindex(-1),m_rx(1.0),m_ry(1.0){
+
   for(int i=0;i<10;i++){
     m_sceneArray[i] = NULL;
   }
@@ -60,10 +61,10 @@ bool GamePlay::addLoadScene(LoadScene* scene){
   scene->setScaleY(m_ry);
   m_arrayindex++;
   m_sceneArray[m_arrayindex] = scene;
-  CCLOG("load scene added %d", scene->getTag());
+
   m_arrayindex++;
   m_sceneArray[m_arrayindex] = scene->getUserScene();
-  CCLOG("user scene added %d",scene->getUserScene()->getTag());
+
   return true;
 }
 

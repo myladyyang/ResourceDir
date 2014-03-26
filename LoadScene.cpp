@@ -11,7 +11,7 @@ bool LoadScene::init(UserScene* scene){
   addChild(syslayer);
   layer = LoadLayer::create();
   addChild(layer);
-
+  loadtime = 0;
 
 
   this->scheduleUpdate();
@@ -23,15 +23,14 @@ void LoadScene::load(){
 }
 
 void LoadScene::update(float dt){
+  loadtime++;
   if(b_ended){
     return;
   }
   auto percent = p_scene->getInitPercent();
   layer->setProgress(percent);
   if(percent == 1.0f){
-    auto am = Director::getInstance()->getActionManager()->getNumberOfRunningActionsInTarget();
-    CCLOG("am %d",am);
-    if (am == 0){
+    if(loadtime > FADETIME *FPS){
       b_ended = true;
     
       end();
@@ -43,8 +42,7 @@ void LoadScene::update(float dt){
 }
 
 void LoadScene::end(){
-  CCLOG("load scene end");
-  GamePlay::getInstance()->NextScene();
+  Director::getInstance()->replaceScene(TransitionFade::create(2,p_scene));
 }
 
 LoadScene* LoadScene::create(UserScene* scene){
