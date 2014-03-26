@@ -72,10 +72,12 @@ class UserScene :public cocos2d::Scene{
   
   bool m_scale;
   float m_scale_thr;
-
+  //for camera purpose
   bool xupdate;
   bool yupdate;
-  bool b_pause;
+  bool b_follow;
+
+  cocos2d::Node * nodef;
 };
 
 

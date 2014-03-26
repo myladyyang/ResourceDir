@@ -10,14 +10,14 @@ void UserScene::end(){
   GamePlay::getInstance()->NextScene();
 }
 
-UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL),battlelayer(NULL),m_scale(false),m_scale_thr(1.0){
+UserScene::UserScene():Scene(),player(NULL),worldlayer(NULL),syslayer(NULL),battlelayer(NULL),m_scale(false),m_scale_thr(1.0),nodef(nullptr){
   ScreenSize = Size(GAME_WIDTH,GAME_HEIGHT);
   b_init = false;
   m_percent = 0;
   xupdate = true;
   yupdate = true;
   //strange after pause the player positon still have one frame change, I guess the physic check pause after node check..., that's why I add this flag to force stop node update.
-  b_pause = false;
+  b_follow = false;
 }
 
 UserScene::~UserScene(){
@@ -94,6 +94,7 @@ void UserScene::update(float delta){
     {
       _physicsWorld->update(delta);
     }
+
   if(!b_init){
     return;
   }
@@ -115,9 +116,14 @@ void UserScene::update(float delta){
      Director::getInstance()->setModelView(-(ppnew.x -pp.x),-(ppnew.y-pp.y),0);
   }
    pp = pp2;
-   //  scale here
-   if(m_scale  ){
-     battlescale();
+   // //  scale here
+   // if(m_scale  ){
+   //   battlescale();
+   // }
+   // //follow here
+   if (b_follow){
+     GamePlay::getInstance()->FollowNode(nodef);
+     b_follow = false;
    }
 }
 #endif
@@ -181,8 +187,8 @@ void UserScene::onNodeTouchedBegan(Node* node,Point tp){
     onButtonClick(dynamic_cast<BattleLayer*>( node)->ButtonClick(Point(tp.x-basic.x,tp.y-basic.y)));
     getPhysicsWorld()->setSpeed(3.0f);
     player->setBattleState(BattleState::NORMALSTATE);
-    unbattlescale();
-    //    GamePlay::getInstance()->unFollow();
+    //    unbattlescale();
+        GamePlay::getInstance()->unFollow();
   }
 
 }
@@ -274,9 +280,10 @@ void UserScene::onRangeContactBegan(Node* nodeA,Node* inter_obj){
     pos = Point(pos.x,pos.y);
     battlelayer->setPosition(pos);
     getPhysicsWorld()->setSpeed(0);
-    b_pause = true;
+    b_follow = true;
     m_scale = true;
-    //    GamePlay::getInstance()->FollowNode(player);
+    nodef = inter_obj;
+    //GamePlay::getInstance()->FollowNode(inter_obj);
   }
   else{
     return;
