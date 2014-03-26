@@ -34,9 +34,14 @@ class GamePlay
   bool addScene(cocos2d::Scene* scene);
   bool addLoadScene(LoadScene* scene);
   void setRatio(float,float);
+
+  //view operation
   void SaveView();
   float getSavedY();
   float getSavedX();
+  
+  void FollowNode(cocos2d::Node*);
+  void unFollow();
   static GamePlay* m_game;
  private:
   //single

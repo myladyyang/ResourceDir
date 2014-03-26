@@ -14,7 +14,7 @@ class LoadScene:public cocos2d::Scene{
   void setUserScene(UserScene* scene){p_scene = scene;}
   UserScene* getUserScene(){return p_scene;};
   static LoadScene * create(UserScene* preparedscene);
-
+  void load() ;
   void update(float dt) override;
  private:
   

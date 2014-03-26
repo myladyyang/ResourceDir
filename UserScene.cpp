@@ -5,6 +5,7 @@
 #include <stdlib.h>
 USING_NS_CC;
 
+
 void UserScene::end(){
   GamePlay::getInstance()->NextScene();
 }
@@ -28,13 +29,21 @@ bool UserScene::init(){
   Scene::init();
   Scene::initWithPhysics();
   
+
+  
+
+  //  max_slider = ControlSlider::create
+
+  return true;
+}
+
+void UserScene::load(){
   getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     
   getPhysicsWorld()->setGravity(Vect(0,-100));
   getPhysicsWorld()->setSpeed(3.0);
 
 
-  CCLOG("UserScene init entered");
   syslayer = SysLayer::create();
   worldlayer = WorldLayer::create();
   worldlayer->setUserScene(this);
@@ -46,11 +55,7 @@ bool UserScene::init(){
   this->addChild(worldlayer);
 
   WorldSize = worldlayer->getWorldSize();
-
-
-  return true;
 }
-
 
 Scene * UserScene::create(){
   CCLOG("UserScene create");
@@ -92,21 +97,13 @@ void UserScene::update(float delta){
   //perforance enhanced here
   if (player->getXposition() <= ScreenSize.width/2+player->getContentSize().width/20){
     ppnew.x = pp.x;
-    
   }
   if (player->getXposition() >= WorldSize.width-ScreenSize.width/2){
     ppnew.x = pp.x;
   }
-  if (player->getPosition().y < ScreenSize.height*3/4){
-
-    ppnew.y = pp.y;
-  }
-      
-   if (player->getActionState() != ActionState::STANDBY){
+  if (player->getActionState() != ActionState::STANDBY){
      Director::getInstance()->setModelView(-(ppnew.x -pp.x),-(ppnew.y-pp.y),0);
-     //     CCLOG("opengl origin view : %f, %f",Director::getInstance()->getVisibleOrigin().x,Director::getInstance()->getVisibleOrigin().y);
-
-   }
+  }
    pp = pp2;
   //scale here
    if(m_scale  ){
@@ -118,7 +115,7 @@ void UserScene::update(float delta){
 void UserScene::battlescale(){
   if (m_scale_thr <= SCALE_THR){
     m_scale_thr += 0.01;
-    setScale(m_scale_thr);
+    worldlayer->setScale(m_scale_thr);
   }
 }
 
@@ -126,7 +123,7 @@ void UserScene::unbattlescale(){
 
   m_scale_thr = 1.0;
   m_scale= false;
-  setScale(1.0);
+  worldlayer->setScale(1.0);
 }
 
 
@@ -144,7 +141,7 @@ void UserScene::scheduleMove(float dt){
 }
 
 void UserScene::initProgress(float percent){
-
+  
   if(    percent == 1.0){
     b_init = SceneBuild();
   }
@@ -170,6 +167,7 @@ void UserScene::onNodeTouchedBegan(Node* node,Point tp){
     getPhysicsWorld()->setSpeed(3.0f);
     player->setBattleState(BattleState::NORMALSTATE);
     unbattlescale();
+    GamePlay::getInstance()->unFollow();
   }
 
 }
@@ -262,8 +260,10 @@ void UserScene::onRangeContactBegan(Node* nodeA,Node* inter_obj){
     battlelayer->setPosition(pos);
     getPhysicsWorld()->setSpeed(0);
     m_scale = true;
+    GamePlay::getInstance()->FollowNode(player);
   }
   else{
     return;
   }
 }
+

@@ -53,10 +53,14 @@ bool TestScene::SceneBuild(){
   return true;
 }
 
+void TestScene::load(){
+  UserScene::load();
+  initCache("player.ExportJson");
+
+}
+
 bool TestScene::init(){
   UserScene::init();
-
-  initCache("player.ExportJson");
   
   return true;
 }

@@ -2,6 +2,7 @@
 #define __USER_SCENE_H_
 
 #include "cocos2d.h"
+#include "cocos-ext.h"
 #include "SysLayer.h"
 #include "WorldLayer.h"
 #include "Valkyrie.h"
@@ -18,6 +19,7 @@ class UserScene :public cocos2d::Scene{
   //static Scene* createWithPhysics();
   virtual WorldLayer* getWorldLayer() ;
   virtual void AddNodetoWorld(Node*,int);
+  virtual void load();
   void addPlayer(Valkyrie * p);
   
 
@@ -52,6 +54,8 @@ class UserScene :public cocos2d::Scene{
   friend class WorldLayer;
 
  private:
+  cocos2d::extension::ControlSlider* max_slider;
+
   float m_percent;
   void scheduleMove(float dt);
   void battlescale();

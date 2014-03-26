@@ -7,6 +7,7 @@ class TestScene: public UserScene{
  public:
   virtual bool init() override;
   bool SceneBuild() override;
+  virtual void load() override;
   CREATE_FUNC(TestScene);
  private:
   TestScene();

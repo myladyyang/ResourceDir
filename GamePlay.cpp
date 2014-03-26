@@ -2,6 +2,7 @@
 #include "HelloWorldScene.h"
 #include "TestScene.h"
 #include "LoadScene.h"
+#include "MainMenuScene.h"
 #define COCOS2D_DEBUG 1
 USING_NS_CC;
 
@@ -59,8 +60,10 @@ bool GamePlay::addLoadScene(LoadScene* scene){
   scene->setScaleY(m_ry);
   m_arrayindex++;
   m_sceneArray[m_arrayindex] = scene;
+  CCLOG("load scene added %d", scene->getTag());
   m_arrayindex++;
   m_sceneArray[m_arrayindex] = scene->getUserScene();
+  CCLOG("user scene added %d",scene->getUserScene()->getTag());
   return true;
 }
 
@@ -73,8 +76,10 @@ void GamePlay::NextScene(){
 #endif
   }
   currentScene++;
-  CCLOG("current scene :%d",currentScene);
+  CCLOG("current scene :%d",m_sceneArray[currentScene]->getTag());
+  m_sceneArray[currentScene]->load();
   Director::getInstance()->replaceScene(TransitionFade::create(2,m_sceneArray[currentScene]));
+  //  Director::getInstance()->replaceScene(m_sceneArray[currentScene]);
 }
 
 
@@ -82,11 +87,18 @@ void GamePlay::NextScene(){
 bool GamePlay::init(){
   //init others, like layers, players, and data or something
   //now we only need add scene, gameplay init with sample scene
+  auto menu = MainMenuScene::create();
+  menu->setTag(71);
   auto u_scene = TestScene::create();
+  u_scene->setTag(72);
   auto load = LoadScene::create(u_scene);
-
-
+  load->setTag(73);
+  
+  addScene(menu);
   addLoadScene(load);
+
+
+  
   return true;
   
 }
@@ -103,3 +115,22 @@ float GamePlay::getSavedY(){
 float GamePlay::getSavedX(){
   return m_view.mat[12];
 }
+
+
+void GamePlay::FollowNode(Node* node){
+  SaveView();
+  CCLOG("camera position: %f,%f",getSavedX(),getSavedY());
+  CCLOG("player positioin: %f, %f",node->getPosition().x,node->getPosition().y);
+  auto nx =   -getSavedX() - node->getPosition().x;
+  auto ny =   -getSavedY() - node->getPosition().y;
+  Director::getInstance()->setModelView(nx,ny,0);
+}
+
+void GamePlay::unFollow(){
+  kmMat4 newVec;
+  kmGLGetMatrix(KM_GL_MODELVIEW,&newVec);
+  auto newx = newVec.mat[12];
+  auto newy = newVec.mat[13];
+  Director::getInstance()->setModelView(m_view.mat[12] - newx,m_view.mat[13] - newy,0);
+}
+
