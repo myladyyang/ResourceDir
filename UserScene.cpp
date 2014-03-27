@@ -94,11 +94,14 @@ void UserScene::update(float delta){
     {
       _physicsWorld->update(delta);
     }
+  
+  player->updatePhysicsTransform();
+  
 
   if(!b_init){
     return;
   }
-  Point ppnew = player->getPosition();
+  auto ppnew = player->getPosition();
   auto pp2 = ppnew;
   //perforance enhanced here
   if (player->getXposition() <= ScreenSize.width/2+player->getContentSize().width/20 || player->getXposition() >= WorldSize.width-ScreenSize.width/2){
@@ -116,11 +119,11 @@ void UserScene::update(float delta){
      Director::getInstance()->setModelView(-(ppnew.x -pp.x),-(ppnew.y-pp.y),0);
   }
    pp = pp2;
-   // //  scale here
-   // if(m_scale  ){
-   //   battlescale();
-   // }
-   // //follow here
+   //  scale here
+   if(m_scale  ){
+     battlescale();
+   }
+   //follow here
    if (b_follow){
      GamePlay::getInstance()->FollowNode(nodef);
      b_follow = false;
@@ -187,8 +190,8 @@ void UserScene::onNodeTouchedBegan(Node* node,Point tp){
     onButtonClick(dynamic_cast<BattleLayer*>( node)->ButtonClick(Point(tp.x-basic.x,tp.y-basic.y)));
     getPhysicsWorld()->setSpeed(3.0f);
     player->setBattleState(BattleState::NORMALSTATE);
-    //    unbattlescale();
-        GamePlay::getInstance()->unFollow();
+    unbattlescale();
+    GamePlay::getInstance()->unFollow();
   }
 
 }

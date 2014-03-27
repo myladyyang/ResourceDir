@@ -9,7 +9,7 @@ TestScene::TestScene():UserScene(){
 
 bool TestScene::SceneBuild(){
   auto player = Valkyrie::create("player");
-
+  player->setTag(1124);
   player->SetMoveAnimation("Animation1");
   player->SetJumpAnimation("Animation1");
   player->SetJump2Animation("Animation1");
